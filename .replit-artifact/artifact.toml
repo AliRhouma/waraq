@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Waraq — ورق"
+version = "1.0.0"
+id = "artifacts/waraq"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23897
+
+[services.development]
+run = "pnpm --filter @workspace/waraq run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/waraq", "run", "build" ]
+publicDir = "artifacts/waraq/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23897"
+BASE_PATH = "/"

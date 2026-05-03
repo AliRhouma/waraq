@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — مكتبة العادات</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { padding: 0; }
+    .fa-solid { line-height: 1; }
+
+    .lib-header { background: linear-gradient(135deg, var(--color-gold-900) 0%, var(--color-gold-800) 100%); border-bottom: 1px solid var(--color-gold-600); padding: var(--space-3) var(--space-4); display: flex; align-items: center; gap: var(--space-3); flex-shrink: 0; position: sticky; top: 0; z-index: 50; }
+    .lib-header-back { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); color: var(--color-gold-300); font-size: var(--text-lg); cursor: pointer; background: rgba(196,146,42,0.08); text-decoration: none; flex-shrink: 0; transition: all var(--transition-fast); }
+    .lib-header-back:hover { background: rgba(196,146,42,0.18); border-color: var(--color-gold-400); }
+    .lib-header-title { flex: 1; text-align: center; font-family: var(--font-heading); font-size: var(--text-xs); letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-gold-300); direction: ltr; }
+    .lib-header-counter { width: 52px; text-align: center; flex-shrink: 0; }
+    .counter-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; padding: 0 6px; border-radius: var(--radius-full); background: rgba(196,146,42,0.12); border: 1px solid var(--border-subtle); font-family: var(--font-heading); font-size: var(--text-xs); letter-spacing: 0.05em; color: var(--color-gold-400); transition: all var(--transition-base); }
+    .counter-badge.has-selection { background: var(--color-gold-700); border-color: var(--color-gold-500); color: var(--color-gold-100); box-shadow: 0 0 10px rgba(196,146,42,0.4); }
+    .counter-sub { font-family: var(--font-heading); font-size: 0.5rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-gold-600); display: block; margin-top: 2px; }
+
+    .filter-row { display: flex; gap: var(--space-2); padding: var(--space-3) var(--space-4); overflow-x: auto; scrollbar-width: none; background: var(--color-gold-900); border-bottom: 1px solid rgba(196,146,42,0.15); flex-shrink: 0; }
+    .filter-row::-webkit-scrollbar { display: none; }
+    .filter-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: var(--radius-full); font-family: var(--font-heading); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; cursor: pointer; border: 1px solid rgba(196,146,42,0.3); background: rgba(196,146,42,0.06); color: var(--color-gold-500); transition: all var(--transition-fast); user-select: none; }
+    .filter-chip:hover { background: rgba(196,146,42,0.14); border-color: var(--color-gold-400); color: var(--color-gold-300); }
+    .filter-chip.active { background: var(--color-gold-600); border-color: var(--color-gold-500); color: var(--color-gold-100); box-shadow: 0 2px 8px rgba(196,146,42,0.35); }
+    .filter-chip i { font-size: 11px; }
+
+    .habit-list { padding: var(--space-4) var(--space-4) 100px; display: flex; flex-direction: column; gap: var(--space-3); }
+    .habit-item { background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: var(--radius-md); padding: var(--space-4); display: flex; align-items: center; gap: var(--space-4); direction: rtl; cursor: pointer; transition: all var(--transition-base); position: relative; overflow: hidden; }
+    .habit-item:hover { border-color: rgba(196,146,42,0.45); transform: translateY(-1px); box-shadow: var(--shadow-soft); }
+    .habit-item.selected { border-color: var(--color-gold-500); background: rgba(196,146,42,0.04); box-shadow: 0 0 0 3px rgba(196,146,42,0.1), var(--shadow-soft); }
+    .habit-item.selected::before { content: ''; position: absolute; top: 0; right: 0; width: 3px; height: 100%; background: var(--color-gold-500); }
+    .habit-item.hidden { display: none; }
+    .habit-icon-wrap { width: 46px; height: 46px; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--color-gold-900), var(--color-gold-800)); border: 1px solid var(--color-gold-700); display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--color-gold-300); flex-shrink: 0; transition: all var(--transition-base); }
+    .habit-item.selected .habit-icon-wrap { border-color: var(--color-gold-500); background: linear-gradient(135deg, var(--color-gold-800), var(--color-gold-700)); }
+    .habit-text { flex: 1; min-width: 0; }
+    .habit-name-ar { font-family: var(--font-display); font-size: var(--text-md); color: var(--text-primary); line-height: 1.3; }
+    .habit-name-en { font-family: var(--font-heading); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); direction: ltr; display: block; margin-top: 2px; }
+    .habit-desc { font-family: var(--font-body); font-style: italic; font-size: var(--text-sm); color: var(--text-secondary); display: block; margin-top: var(--space-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; direction: ltr; }
+    .habit-toggle { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--border-subtle); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition-base); flex-shrink: 0; }
+    .toggle-icon { color: var(--color-gold-500); font-size: 16px; line-height: 1; transition: all var(--transition-fast); }
+    .habit-item.selected .habit-toggle { background: var(--color-gold-600); border-color: var(--color-gold-500); box-shadow: 0 0 10px rgba(196,146,42,0.4); }
+    .habit-item.selected .toggle-icon { color: var(--color-gold-100); }
+
+    .continue-bar { position: sticky; bottom: 0; left: 0; right: 0; padding: var(--space-4) var(--space-5); background: linear-gradient(to top, var(--bg-page) 70%, transparent); z-index: 40; }
+    .continue-btn { display: block; width: 100%; padding: 13px var(--space-6); font-family: var(--font-heading); font-size: var(--text-xs); letter-spacing: 0.2em; text-transform: uppercase; text-align: center; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-base); background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-600)); color: var(--color-gold-100); box-shadow: 0 2px 16px rgba(196,146,42,0.35), inset 0 1px 0 rgba(255,255,255,0.1); position: relative; overflow: hidden; }
+    .continue-btn::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.08); opacity: 0; transition: opacity var(--transition-fast); }
+    .continue-btn:hover::before { opacity: 1; }
+    .continue-btn:active { transform: scale(0.98); }
+    .continue-btn.disabled { background: rgba(92,61,26,0.2); color: var(--color-ink-300); box-shadow: none; cursor: not-allowed; pointer-events: none; }
+
+    .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; padding: var(--space-16) var(--space-8); text-align: center; gap: var(--space-4); }
+    .empty-state.visible { display: flex; }
+    .empty-icon { font-size: 2.5rem; color: var(--color-gold-600); opacity: 0.4; }
+    .empty-text { font-family: var(--font-body); font-style: italic; color: var(--text-muted); font-size: var(--text-md); direction: ltr; }
+  </style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="screen" style="position:relative;"  >
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons"><span>▌▌▌</span><span style="font-size:9px;">WiFi</span><span style="font-size:9px;">⬛</span></div>
+    </div>
+
+    <div class="lib-header">
+      <a href="../home/index.html" class="lib-header-back">‹</a>
+      <div class="lib-header-title">Choose Your Habits</div>
+      <div class="lib-header-counter">
+        <div class="counter-badge" id="counter-badge">0</div>
+        <span class="counter-sub">selected</span>
+      </div>
+    </div>
+
+    <div class="filter-row" id="filter-row">
+      <div class="filter-chip active" data-cat="all">✦ All</div>
+      <div class="filter-chip" data-cat="prayer"><i class="fa-solid fa-mosque"></i> Prayer</div>
+      <div class="filter-chip" data-cat="quran"><i class="fa-solid fa-book-open"></i> Quran</div>
+      <div class="filter-chip" data-cat="dhikr"><i class="fa-solid fa-hands-praying"></i> Dhikr</div>
+      <div class="filter-chip" data-cat="fasting"><i class="fa-solid fa-moon"></i> Fasting</div>
+      <div class="filter-chip" data-cat="charity"><i class="fa-solid fa-heart"></i> Charity</div>
+      <div class="filter-chip" data-cat="sunnah"><i class="fa-solid fa-star"></i> Sunnah</div>
+    </div>
+
+    <div class="scroll-area" style="position:relative;">
+      <div class="habit-list" id="habit-list">
+
+        <div class="habit-item" data-id="1" data-cat="prayer" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">الصلوات الخمس</div>
+            <span class="habit-name-en">Five Daily Prayers</span>
+            <span class="habit-desc">"The pillar of the day"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-mosque"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="2" data-cat="sunnah prayer" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">السنن الرواتب</div>
+            <span class="habit-name-en">Sunnah Rawatib</span>
+            <span class="habit-desc">"12 rakaat with the obligatory prayers"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-star"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="3" data-cat="quran" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">قراءة القرآن</div>
+            <span class="habit-name-en">Quran Reading</span>
+            <span class="habit-desc">"Daily connection with the Book"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-book-open"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="4" data-cat="dhikr" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">أذكار الصباح والمساء</div>
+            <span class="habit-name-en">Morning &amp; Evening Adhkar</span>
+            <span class="habit-desc">"Fortress of the believer"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-sun"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="5" data-cat="sunnah prayer" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">قيام الليل</div>
+            <span class="habit-name-en">Tahajjud</span>
+            <span class="habit-desc">"The honor of the believer"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-moon"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="6" data-cat="sunnah prayer" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">صلاة الضحى</div>
+            <span class="habit-name-en">Duha Prayer</span>
+            <span class="habit-desc">"Charity for every joint in your body"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-cloud-sun"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="7" data-cat="fasting" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">صيام الإثنين والخميس</div>
+            <span class="habit-name-en">Mon/Thu Fasting</span>
+            <span class="habit-desc">"Deeds are presented on these days"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-calendar-days"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="8" data-cat="fasting" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">صيام الأيام البيض</div>
+            <span class="habit-name-en">Ayyam al-Beed Fasting</span>
+            <span class="habit-desc">"13, 14, 15 of each Hijri month"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-circle-half-stroke"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="9" data-cat="dhikr" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">الاستغفار</div>
+            <span class="habit-name-en">Istighfar</span>
+            <span class="habit-desc">"Seek forgiveness 100 times daily"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-hands-praying"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="10" data-cat="dhikr sunnah" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">الصلاة على النبي</div>
+            <span class="habit-name-en">Salawat</span>
+            <span class="habit-desc">"Send blessings on the Prophet ﷺ"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-sparkles"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="11" data-cat="charity" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">الصدقة اليومية</div>
+            <span class="habit-name-en">Daily Sadaqah</span>
+            <span class="habit-desc">"Even a smile is charity"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-heart"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="12" data-cat="quran" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">تدبر آية</div>
+            <span class="habit-name-en">Reflect on one Ayah</span>
+            <span class="habit-desc">"Slow, deep reading"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-magnifying-glass"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="13" data-cat="sunnah charity" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">صلة الرحم</div>
+            <span class="habit-name-en">Maintain Family Ties</span>
+            <span class="habit-desc">"A weekly call or visit"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-users"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="14" data-cat="sunnah" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">تعلم حديث</div>
+            <span class="habit-name-en">Learn one Hadith</span>
+            <span class="habit-desc">"Build prophetic knowledge weekly"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-scroll"></i></div>
+        </div>
+
+        <div class="habit-item" data-id="15" data-cat="dhikr" onclick="toggleHabit(this)">
+          <div class="habit-toggle"><span class="toggle-icon"><i class="fa-solid fa-plus"></i></span></div>
+          <div class="habit-text">
+            <div class="habit-name-ar">الدعاء</div>
+            <span class="habit-name-en">Daily Du'a</span>
+            <span class="habit-desc">"The essence of worship"</span>
+          </div>
+          <div class="habit-icon-wrap"><i class="fa-solid fa-hand-holding-heart"></i></div>
+        </div>
+
+      </div>
+
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <div class="empty-text">No habits in this category yet.</div>
+      </div>
+
+      <div class="continue-bar">
+        <button class="continue-btn disabled" id="continue-btn" onclick="goNext()">
+          Continue with <span id="continue-count">0</span> habits
+        </button>
+      </div>
+    </div>
+
+    <nav class="bottom-nav" style="position:absolute;bottom:0;left:0;right:0;height:68px;background:linear-gradient(to top,var(--color-gold-900),var(--color-gold-800));border-top:1px solid var(--color-gold-600);display:flex;align-items:center;justify-content:space-around;padding:0 8px;z-index:50;direction:ltr;">
+      <a href="../home/index.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;text-decoration:none;opacity:0.55;">
+        <span style="font-size:18px;line-height:1;color:var(--color-gold-300);"><i class="fa-solid fa-house"></i></span>
+        <span style="font-family:var(--font-heading);font-size:0.45rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold-400);">Home</span>
+      </a>
+      <a href="#" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;text-decoration:none;opacity:1;">
+        <span style="font-size:18px;line-height:1;color:var(--color-gold-200);transform:scale(1.12);display:block;"><i class="fa-solid fa-book-open"></i></span>
+        <span style="font-family:var(--font-heading);font-size:0.45rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold-200);">Library</span>
+        <span style="width:4px;height:4px;border-radius:50%;background:var(--color-gold-400);"></span>
+      </a>
+      <a href="../insights/index.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;text-decoration:none;opacity:0.55;">
+        <span style="font-size:18px;line-height:1;color:var(--color-gold-300);"><i class="fa-solid fa-chart-line"></i></span>
+        <span style="font-family:var(--font-heading);font-size:0.45rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold-400);">Insights</span>
+      </a>
+      <a href="../settings/index.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;text-decoration:none;opacity:0.55;">
+        <span style="font-size:18px;line-height:1;color:var(--color-gold-300);"><i class="fa-solid fa-sliders"></i></span>
+        <span style="font-family:var(--font-heading);font-size:0.45rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold-400);">Settings</span>
+      </a>
+    </nav>
+  </div>
+</div>
+
+<script>
+  const HABITS = [
+    {id:'1',nameAr:'الصلوات الخمس',nameEn:'Five Daily Prayers',cat:['prayer']},
+    {id:'2',nameAr:'السنن الرواتب',nameEn:'Sunnah Rawatib',cat:['sunnah','prayer']},
+    {id:'3',nameAr:'قراءة القرآن',nameEn:'Quran Reading',cat:['quran']},
+    {id:'4',nameAr:'أذكار الصباح والمساء',nameEn:'Morning & Evening Adhkar',cat:['dhikr']},
+    {id:'5',nameAr:'قيام الليل',nameEn:'Tahajjud',cat:['sunnah','prayer']},
+    {id:'6',nameAr:'صلاة الضحى',nameEn:'Duha Prayer',cat:['sunnah','prayer']},
+    {id:'7',nameAr:'صيام الإثنين والخميس',nameEn:'Mon/Thu Fasting',cat:['fasting']},
+    {id:'8',nameAr:'صيام الأيام البيض',nameEn:'Ayyam al-Beed Fasting',cat:['fasting']},
+    {id:'9',nameAr:'الاستغفار',nameEn:'Istighfar',cat:['dhikr']},
+    {id:'10',nameAr:'الصلاة على النبي',nameEn:'Salawat',cat:['dhikr','sunnah']},
+    {id:'11',nameAr:'الصدقة اليومية',nameEn:'Daily Sadaqah',cat:['charity']},
+    {id:'12',nameAr:'تدبر آية',nameEn:'Reflect on one Ayah',cat:['quran']},
+    {id:'13',nameAr:'صلة الرحم',nameEn:'Maintain Family Ties',cat:['sunnah','charity']},
+    {id:'14',nameAr:'تعلم حديث',nameEn:'Learn one Hadith',cat:['sunnah']},
+    {id:'15',nameAr:'الدعاء',nameEn:"Daily Du'a",cat:['dhikr']},
+  ];
+  let selected = new Set();
+  let activeFilter = 'all';
+
+  function toggleHabit(el) {
+    const id = el.dataset.id;
+    const iconSpan = el.querySelector('.toggle-icon');
+    if (selected.has(id)) {
+      selected.delete(id);
+      el.classList.remove('selected');
+      iconSpan.innerHTML = '<i class="fa-solid fa-plus"></i>';
+    } else {
+      selected.add(id);
+      el.classList.add('selected');
+      iconSpan.innerHTML = '<i class="fa-solid fa-check"></i>';
+    }
+    updateUI();
+  }
+
+  document.getElementById('filter-row').addEventListener('click', function(e) {
+    const chip = e.target.closest('.filter-chip');
+    if (!chip) return;
+    activeFilter = chip.dataset.cat;
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    applyFilter();
+  });
+
+  function applyFilter() {
+    const items = document.querySelectorAll('.habit-item');
+    let visibleCount = 0;
+    items.forEach(function(item) {
+      const cats = item.dataset.cat.split(' ');
+      const show = activeFilter === 'all' || cats.includes(activeFilter);
+      item.classList.toggle('hidden', !show);
+      if (show) visibleCount++;
+    });
+    document.getElementById('empty-state').classList.toggle('visible', visibleCount === 0);
+  }
+
+  function updateUI() {
+    const count = selected.size;
+    const badge = document.getElementById('counter-badge');
+    badge.textContent = count;
+    badge.classList.toggle('has-selection', count > 0);
+    const btn = document.getElementById('continue-btn');
+    document.getElementById('continue-count').textContent = count;
+    btn.classList.toggle('disabled', count === 0);
+  }
+
+  function goNext() {
+    if (selected.size === 0) return;
+    const chosenHabits = HABITS.filter(h => selected.has(h.id));
+    localStorage.setItem('waraq_selected_habits', JSON.stringify(chosenHabits));
+    localStorage.setItem('waraq_selected_ids', JSON.stringify(Array.from(selected)));
+    waraqGo('../prioritize/index.html');
+  }
+
+  (function init() {
+    const stored = localStorage.getItem('waraq_selected_ids');
+    if (stored) {
+      const ids = JSON.parse(stored);
+      ids.forEach(function(id) {
+        selected.add(id);
+        const el = document.querySelector('[data-id="' + id + '"]');
+        if (el) {
+          el.classList.add('selected');
+          el.querySelector('.toggle-icon').innerHTML = '<i class="fa-solid fa-check"></i>';
+        }
+      });
+      updateUI();
+    }
+  })();
+</script>
+<script src="../../js/router.js"></script>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — المستويات</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    .fa-solid { line-height: 1; }
+    body { padding: 0; }
+
+    /* ---- MANUSCRIPT HABIT CARD ---- */
+    .tier-card {
+      background: var(--bg-card);
+      border: 2px solid var(--color-gold-500);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 0 0 4px rgba(196,146,42,0.08);
+      position: relative;
+    }
+    .tier-card-corner { position: absolute; }
+    .tier-card-header {
+      background: linear-gradient(135deg, var(--color-gold-900), var(--color-gold-800));
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--color-gold-600);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .tier-card-icon {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-md);
+      background: rgba(196,146,42,0.12);
+      border: 1px solid var(--color-gold-600);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .tier-card-names { flex: 1; text-align: right; }
+    .tier-card-name-ar {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--color-gold-200);
+      line-height: 1.2;
+    }
+    .tier-card-name-en {
+      font-family: var(--font-heading);
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-gold-500);
+      direction: ltr;
+      display: block;
+      margin-top: 2px;
+    }
+    .tier-card-body { padding: var(--space-5); }
+
+    /* ---- TIER LADDER ---- */
+    .tier-ladder {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+      direction: ltr;
+    }
+    .tier-pill {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .tier-pill-label {
+      font-family: var(--font-heading);
+      font-size: 0.5rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color var(--transition-fast);
+    }
+    .tier-pill-btn {
+      width: 100%;
+      padding: 8px 4px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border-subtle);
+      background: transparent;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      line-height: var(--leading-snug);
+    }
+    .tier-pill:hover .tier-pill-btn {
+      border-color: rgba(196,146,42,0.4);
+      color: var(--text-primary);
+      background: rgba(196,146,42,0.04);
+    }
+    .tier-pill.active .tier-pill-label {
+      color: var(--color-gold-500);
+    }
+    .tier-pill.active .tier-pill-btn {
+      background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-600));
+      border-color: var(--color-gold-500);
+      color: var(--color-gold-100);
+      box-shadow: 0 2px 10px rgba(196,146,42,0.35);
+    }
+
+    /* connector line between pills */
+    .tier-connector {
+      display: flex;
+      align-items: center;
+      padding: 0 2px;
+      margin-bottom: var(--space-4);
+      direction: ltr;
+    }
+    .tier-conn-segment {
+      flex: 1;
+      height: 2px;
+      background: var(--border-subtle);
+      position: relative;
+    }
+    .tier-conn-segment.reached {
+      background: linear-gradient(to right, var(--color-gold-600), var(--color-gold-400));
+    }
+    .tier-conn-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--border-subtle);
+      flex-shrink: 0;
+    }
+    .tier-conn-dot.reached { background: var(--color-gold-500); }
+
+    /* tier note */
+    .tier-note {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      text-align: center;
+      line-height: var(--leading-relaxed);
+      direction: ltr;
+      padding: var(--space-3) var(--space-2) 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* ---- CONTINUE BAR ---- */
+    .continue-bar {
+      position: sticky;
+      bottom: 0;
+      padding: var(--space-4) var(--space-5);
+      background: linear-gradient(to top, var(--bg-page) 70%, transparent);
+      z-index: 40;
+      flex-shrink: 0;
+    }
+    .continue-btn {
+      display: block; width: 100%;
+      padding: 13px var(--space-6);
+      font-family: var(--font-heading);
+      font-size: var(--text-xs);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-align: center;
+      text-decoration: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-600));
+      color: var(--color-gold-100);
+      box-shadow: 0 2px 16px rgba(196,146,42,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+      transition: all var(--transition-base);
+      position: relative; overflow: hidden;
+    }
+    .continue-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.08);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+    .continue-btn:hover::before { opacity: 1; }
+    .continue-btn:active { transform: scale(0.98); }
+  </style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="screen">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>▌▌▌</span>
+        <span style="font-size:9px;">WiFi</span>
+        <span style="font-size:9px;">⬛</span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="app-header">
+      <a href="../prioritize/index.html" class="app-header-icon" style="text-decoration:none; font-size:var(--text-lg);">‹</a>
+      <div style="flex:1; text-align:center;">
+        <div class="app-header-title" style="font-size:var(--text-xl);">ورق</div>
+        <span class="app-header-title-latin">Set Your Tiers</span>
+      </div>
+      <div style="width:36px;"></div>
+    </div>
+
+    <!-- Scroll area -->
+    <div class="scroll-area">
+      <div style="display:flex; flex-direction:column; padding-bottom: 88px;">
+
+        <!-- Heading -->
+        <div style="padding: var(--space-5) var(--space-5) var(--space-4); text-align:center; direction:ltr;">
+          <h1 style="
+            font-family: var(--font-heading);
+            font-size: var(--text-lg);
+            letter-spacing: 0.1em;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+          ">Choose Your Starting Tier</h1>
+          <p style="
+            font-family: var(--font-body);
+            font-style: italic;
+            font-size: var(--text-md);
+            color: var(--text-secondary);
+            line-height: var(--leading-relaxed);
+          ">Start smaller than feels right. Consistency builds the ladder.</p>
+        </div>
+
+        <!-- Ornament -->
+        <div style="padding: 0 var(--space-5) var(--space-4);">
+          <div class="orn-divider">
+            <div class="orn-divider-line"></div>
+            <span class="orn-divider-diamond"></span>
+            <span class="orn-divider-star">✦</span>
+            <span class="orn-divider-diamond"></span>
+            <div class="orn-divider-line"></div>
+          </div>
+        </div>
+
+        <!-- Cards rendered by JS -->
+        <div id="cards-container" style="padding: 0 var(--space-4); display:flex; flex-direction:column; gap:var(--space-5);">
+        </div>
+
+        <!-- Empty state -->
+        <div id="empty-notice" style="display:none; padding: var(--space-16) var(--space-8); text-align:center; direction:ltr;">
+          <p style="font-family:var(--font-body);font-style:italic;color:var(--text-muted);font-size:var(--text-md);">
+            No prioritized habits found.<br>Go back and complete the previous steps.
+          </p>
+          <a href="../prioritize/index.html" class="btn btn-ghost" style="display:block;margin-top:var(--space-5);text-decoration:none;direction:ltr;">‹ Back</a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Sticky continue -->
+    <div class="continue-bar">
+      <a href="anchor.html" class="continue-btn" id="continue-btn">Continue ✦</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   TIER DEFINITIONS
+   Keyed by habit nameEn (partial match). Fallback generates
+   plausible tiers from the habit name.
+========================================================= */
+const TIER_MAP = {
+  'Quran Reading':          ['1 ayah / day', '1 page / day', 'Half juz / day', '1 juz / day'],
+  'Reflect on one Ayah':    ['1 ayah slowly', '3 ayahs + note', 'Half page + tafsir', '1 page + tafsir'],
+  'Tahajjud':               ['2 rakaat once/week', '2 rakaat 3×/week', 'Nightly 2 rakaat', 'Long qiyam nightly'],
+  'Five Daily Prayers':     ['Pray all 5', 'On time + sunnah qabli', 'Jamaa\'ah when possible', 'Full focus & khushu\''],
+  'Sunnah Rawatib':         ['4 rakaat / day', '8 rakaat / day', '10 rakaat / day', 'Full 12 rakaat / day'],
+  'Duha Prayer':            ['2 rakaat once/week', '2 rakaat 3×/week', '2 rakaat daily', '4–8 rakaat daily'],
+  'Morning & Evening Adhkar': ['1 dhikr', '3 core adhkar', 'Full morning adhkar', 'Morning + evening full'],
+  'Istighfar':              ['10× daily', '33× daily', '70× daily', '100× daily'],
+  'Salawat':                ['10× daily', '33× daily', '70× daily', '100× daily'],
+  'Daily Du\'a':            ['1 du\'a / day', '3 du\'as / day', '5 min session', '10 min session'],
+  'Mon/Thu Fasting':        ['1 day/month', '1 day/week', 'Every Monday', 'Mon + Thu every week'],
+  'Ayyam al-Beed Fasting':  ['1 of 3 days', '2 of 3 days', 'All 3 days', 'All 3 + Mon/Thu'],
+  'Daily Sadaqah':          ['A smile / kind word', 'Small amount daily', 'Weekly sadaqah', 'Daily + structured giving'],
+  'Maintain Family Ties':   ['Monthly check-in', 'Bi-weekly call', 'Weekly call', 'Weekly call + visit'],
+  'Learn one Hadith':       ['1 hadith/month', '1 hadith/2 weeks', '1 hadith/week', '1 hadith + chain/week'],
+};
+
+const ICONS = {
+  '1':'<i class="fa-solid fa-mosque"></i>',
+  '2':'<i class="fa-solid fa-star"></i>',
+  '3':'<i class="fa-solid fa-book-open"></i>',
+  '4':'<i class="fa-solid fa-sun"></i>',
+  '5':'<i class="fa-solid fa-moon"></i>',
+  '6':'<i class="fa-solid fa-cloud-sun"></i>',
+  '7':'<i class="fa-solid fa-calendar-days"></i>',
+  '8':'<i class="fa-solid fa-circle-half-stroke"></i>',
+  '9':'<i class="fa-solid fa-hands-praying"></i>',
+  '10':'<i class="fa-solid fa-sparkles"></i>',
+  '11':'<i class="fa-solid fa-heart"></i>',
+  '12':'<i class="fa-solid fa-magnifying-glass"></i>',
+  '13':'<i class="fa-solid fa-users"></i>',
+  '14':'<i class="fa-solid fa-scroll"></i>',
+  '15':'<i class="fa-solid fa-hand-holding-heart"></i>'
+};
+
+/* Tier state: habitId -> selected tier index (0-based) */
+const tierState = {};
+
+/* =========================================================
+   INIT
+========================================================= */
+(function init() {
+  const stored = localStorage.getItem('waraq_prioritized');
+  if (!stored) {
+    document.getElementById('empty-notice').style.display = 'block';
+    return;
+  }
+
+  const habits = JSON.parse(stored);
+  if (habits.length === 0) {
+    document.getElementById('empty-notice').style.display = 'block';
+    return;
+  }
+
+  /* Default tier 0 for all */
+  habits.forEach(function(h) { tierState[h.id] = 0; });
+
+  const container = document.getElementById('cards-container');
+  habits.forEach(function(h, i) {
+    container.appendChild(buildCard(h, i));
+  });
+})();
+
+/* =========================================================
+   BUILD CARD
+========================================================= */
+function buildCard(habit, cardIndex) {
+  const tiers = getTiers(habit.nameEn);
+  const icon  = ICONS[habit.id] || '⭐';
+
+  const card = document.createElement('div');
+  card.className = 'tier-card fade-up';
+  card.style.animationDelay = (cardIndex * 0.1) + 's';
+
+  /* Corner ornaments */
+  card.innerHTML =
+    '<div class="orn-corner-tl"></div>' +
+    '<div class="orn-corner-tr"></div>' +
+    '<div class="orn-corner-bl"></div>' +
+    '<div class="orn-corner-br"></div>' +
+
+    /* Header */
+    '<div class="tier-card-header">' +
+      '<div class="tier-card-names">' +
+        '<div class="tier-card-name-ar">' + habit.nameAr + '</div>' +
+        '<span class="tier-card-name-en">' + habit.nameEn + '</span>' +
+      '</div>' +
+      '<div class="tier-card-icon">' + icon + '</div>' +
+    '</div>' +
+
+    /* Body */
+    '<div class="tier-card-body">' +
+      /* Progress connector */
+      '<div class="tier-connector" id="conn-' + habit.id + '">' +
+        buildConnector(4, 0) +
+      '</div>' +
+
+      /* Pills */
+      '<div class="tier-ladder" id="ladder-' + habit.id + '">' +
+        tiers.map(function(t, ti) {
+          return '<div class="tier-pill' + (ti === 0 ? ' active' : '') + '" ' +
+            'id="pill-' + habit.id + '-' + ti + '" ' +
+            'onclick="selectTier(\'' + habit.id + '\',' + ti + ',' + JSON.stringify(tiers) + ')">' +
+            '<span class="tier-pill-label">T' + (ti + 1) + '</span>' +
+            '<div class="tier-pill-btn">' + t + '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+
+      /* Recommendation note */
+      '<p class="tier-note">We recommend starting at Tier 1. You can level up after a week of consistency.</p>' +
+    '</div>';
+
+  return card;
+}
+
+/* =========================================================
+   CONNECTOR HTML
+========================================================= */
+function buildConnector(total, activeIdx) {
+  let html = '';
+  for (var i = 0; i < total; i++) {
+    html += '<div class="tier-conn-dot' + (i <= activeIdx ? ' reached' : '') + '"></div>';
+    if (i < total - 1) {
+      html += '<div class="tier-conn-segment' + (i < activeIdx ? ' reached' : '') + '"></div>';
+    }
+  }
+  return html;
+}
+
+/* =========================================================
+   SELECT TIER
+========================================================= */
+function selectTier(habitId, tierIdx, tiers) {
+  tierState[habitId] = tierIdx;
+
+  /* Update pills */
+  for (var t = 0; t < tiers.length; t++) {
+    const pill = document.getElementById('pill-' + habitId + '-' + t);
+    if (pill) pill.classList.toggle('active', t === tierIdx);
+  }
+
+  /* Update connector */
+  const conn = document.getElementById('conn-' + habitId);
+  if (conn) conn.innerHTML = buildConnector(tiers.length, tierIdx);
+
+  /* Save to localStorage */
+  saveTiers();
+}
+
+/* =========================================================
+   GET TIERS for a habit
+========================================================= */
+function getTiers(nameEn) {
+  /* Exact match */
+  if (TIER_MAP[nameEn]) return TIER_MAP[nameEn];
+  /* Partial match */
+  for (var key in TIER_MAP) {
+    if (nameEn.toLowerCase().indexOf(key.toLowerCase()) !== -1 ||
+        key.toLowerCase().indexOf(nameEn.toLowerCase()) !== -1) {
+      return TIER_MAP[key];
+    }
+  }
+  /* Fallback generic */
+  return ['Once a week', '3× a week', 'Daily (short)', 'Daily (full)'];
+}
+
+/* =========================================================
+   SAVE TO LOCALSTORAGE
+========================================================= */
+function saveTiers() {
+  const stored = localStorage.getItem('waraq_prioritized');
+  if (!stored) return;
+  const habits = JSON.parse(stored);
+  const withTiers = habits.map(function(h) {
+    const tiers = getTiers(h.nameEn);
+    const idx   = tierState[h.id] !== undefined ? tierState[h.id] : 0;
+    return Object.assign({}, h, {
+      selectedTier: idx + 1,
+      tierLabel: tiers[idx]
+    });
+  });
+  localStorage.setItem('waraq_with_tiers', JSON.stringify(withTiers));
+}
+
+/* Save defaults on load */
+document.addEventListener('DOMContentLoaded', function() { saveTiers(); });
+</script>
+
+<script src="../../js/router.js"></script>
+</body>
+</html>

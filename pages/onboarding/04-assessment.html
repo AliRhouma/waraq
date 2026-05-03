@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — التقييم</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { padding: 0; }
+
+    .q-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .q-card-header {
+      background: linear-gradient(135deg, var(--color-gold-900), var(--color-gold-800));
+      padding: var(--space-3) var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .q-number {
+      font-family: var(--font-heading);
+      font-size: var(--text-xs);
+      letter-spacing: 0.2em;
+      color: var(--color-gold-400);
+    }
+    .q-title {
+      font-family: var(--font-arabic);
+      font-size: var(--text-md);
+      color: var(--color-gold-200);
+      flex: 1;
+    }
+    .q-options {
+      display: flex;
+      flex-direction: column;
+    }
+    .q-option {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .q-option:last-child { border-bottom: none; }
+    .q-option:hover { background: var(--bg-hover); }
+    .q-option.selected {
+      background: rgba(196,146,42,0.06);
+    }
+    .q-radio {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-subtle);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+    .q-option.selected .q-radio {
+      border-color: var(--color-gold-500);
+      background: var(--color-gold-600);
+    }
+    .q-radio-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--color-gold-100);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+    .q-option.selected .q-radio-dot { opacity: 1; }
+    .q-option-text {
+      font-family: var(--font-arabic);
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      flex: 1;
+    }
+    .q-option.selected .q-option-text {
+      color: var(--text-primary);
+    }
+    .q-option-emoji {
+      font-size: 16px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="screen">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>▌▌▌</span>
+        <span style="font-size:9px;">WiFi</span>
+        <span style="font-size:9px;">⬛</span>
+      </div>
+    </div>
+
+    <!-- App Header -->
+    <div class="app-header" style="justify-content: flex-start; gap: var(--space-4);">
+      <a href="03-location.html" class="app-header-icon" style="text-decoration:none; font-size:var(--text-lg);">‹</a>
+      <div>
+        <div class="app-header-title" style="font-size: var(--text-xl);">ورق</div>
+        <span class="app-header-title-latin">Assessment</span>
+      </div>
+    </div>
+
+    <div class="scroll-area">
+      <div style="padding: var(--space-6) var(--space-5) var(--space-8); display: flex; flex-direction: column; gap: var(--space-5);">
+
+        <!-- Progress dots -->
+        <div style="display: flex; gap: 8px; align-items: center; justify-content: center;">
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.35);"></div>
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.35);"></div>
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.35);"></div>
+          <div style="width:28px;height:4px;border-radius:2px;background:var(--color-gold-400);box-shadow:0 0 8px rgba(196,146,42,0.5);"></div>
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.25);"></div>
+        </div>
+
+        <!-- Heading -->
+        <div class="fade-up" style="text-align: center;">
+          <h1 style="
+            font-family: var(--font-arabic);
+            font-size: var(--text-2xl);
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+          ">أين أنت الآن؟</h1>
+          <p style="
+            font-family: var(--font-body);
+            font-style: italic;
+            font-size: var(--text-md);
+            color: var(--text-secondary);
+            direction: ltr;
+          ">"Be honest with yourself.<br>There's no judgment here."</p>
+        </div>
+
+        <!-- Divider -->
+        <div class="fade-up-1">
+          <div class="orn-divider">
+            <div class="orn-divider-line"></div>
+            <span class="orn-divider-star">✦</span>
+            <div class="orn-divider-line"></div>
+          </div>
+        </div>
+
+        <!-- Q1: Prayers -->
+        <div class="q-card fade-up-1">
+          <div class="q-card-header">
+            <span class="q-number">01</span>
+            <span class="q-title">كيف حال الصلوات الخمس؟</span>
+            <i class="fa-solid fa-mosque" style="font-size:18px;color:var(--color-gold-400);"></i>
+          </div>
+          <div class="q-options">
+            <div class="q-option" onclick="select(this, 'q1')">
+              <div class="q-radio"><div class="q-radio-dot"></div></div>
+              <span class="q-option-text">أغيب عن كثير منها</span>
+              <span class="q-option-emoji"><i class="fa-solid fa-face-sad-tear"></i></span>
+            </div>
+            <div class="q-option" onclick="select(this, 'q1')">
+              <div class="q-radio"><div class="q-radio-dot"></div></div>
+              <span class="q-option-text">أُصلّي معظمها</span>
+              <span class="q-option-emoji"><i class="fa-solid fa-moon"></i></span>
+            </div>
+            <div class="q-option selected" onclick="select(this, 'q1')">
+              <div class="q-radio"><div class="q-radio-dot"></div></div>
+              <span class="q-option-text">أُصلّي جميعها في وقتها</span>
+              <span class="q-option-emoji"><i class="fa-solid fa-sparkles"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q2: Quran -->
+        <div class="q-card fade-up-2">
+          <div class="q-card-header">
+            <span class="q-number">02</span>
+            <span class="q-title">ما علاقتك بالقرآن الكريم؟</span>
+            <i class="fa-solid fa-book-open" style="font-size:18px;color:var(--color-gold-400);"></i>
+          </div>
+          <div class="q-options">
+            <div class="q-option" onclick="select(this, 'q2')">
+              <div class="q-radio"><div class="q-radio-dot"></div></div>
+              <span class="q-option-text">نادراً ما أقرأه</span>
+              <span class="q-option-emoji"><i class="fa-solid fa-face-sad-tear"></i></span>
+            </div>
+            <div class="q-option selected" onclick="select(this, 'q2')">
+              <div class="q-radio"><div class="q-radio-dot"></div></div>
+              <span class="q-option-text">أحياناً أقرأ منه</span>
+              <span class="q-option-emoji"><i class="fa-solid fa-moon"></i></span>
+            </div>
+            <div class="q-option" onclick="select(this, 'q2')">
+              <div class="q-radio"><div class="q-radio-dot"></div></div>
+              <span class="q-option-text">يومياً — ورد منتظم</span>
+              <span class="q-option-emoji"><i class="fa-solid fa-sparkles"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q3: Adhkar -->
+        <div class="q-card fade-up-3">
+          <div class="q-card-header">
+            <span class="q-number">03</span>
+            <span class="q-title">أذكار الصباح والمساء؟</span>
+            <i class="fa-solid fa-sun" style="font-size:18px;color:var(--color-gold-400);"></i>
+          </div>
+          <div class="q-options">
+            <div class="q-option selected" onclick="select(this, 'q3')">
+              <div class="q-radio"><div class="q-radio-dot"></div></div>
+              <span class="q-option-text">لا أُردّدها</span>
+              <span class="q-option-emoji"><i class="fa-solid fa-face-sad-tear"></i></span>
+            </div>
+            <div class="q-option" onclick="select(this, 'q3')">
+              <div class="q-radio"><div class="q-radio-dot"></div></div>
+              <span class="q-option-text">أحياناً</span>
+              <span class="q-option-emoji"><i class="fa-solid fa-moon"></i></span>
+            </div>
+            <div class="q-option" onclick="select(this, 'q3')">
+              <div class="q-radio"><div class="q-radio-dot"></div></div>
+              <span class="q-option-text">بانتظام — كل يوم</span>
+              <span class="q-option-emoji"><i class="fa-solid fa-sparkles"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Continue button -->
+        <div class="fade-up-4">
+          <a href="05-intro-method.html" class="btn btn-primary" style="
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            direction: ltr;
+          ">Continue</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function select(el, group) {
+    document.querySelectorAll('[onclick*="' + group + '"]').forEach(function(opt) {
+      opt.classList.remove('selected');
+    });
+    el.classList.add('selected');
+  }
+</script>
+
+<script src="../../js/router.js"></script>
+</body>
+</html>

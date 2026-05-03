@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — ربط العادة بالصلاة</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    .fa-solid { line-height: 1; }
+    body { padding: 0; }
+
+    /* ---- ANCHOR CARD ---- */
+    .anchor-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: border-color var(--transition-base);
+    }
+    .anchor-card.anchored {
+      border-color: var(--color-gold-500);
+      box-shadow: 0 0 0 3px rgba(196,146,42,0.1);
+    }
+    .anchor-card-header {
+      background: linear-gradient(135deg, var(--color-gold-900), var(--color-gold-800));
+      padding: var(--space-3) var(--space-5);
+      border-bottom: 1px solid var(--color-gold-700);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .anchor-card-icon {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-sm);
+      background: rgba(196,146,42,0.1);
+      border: 1px solid var(--color-gold-700);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .anchor-card-names { flex: 1; text-align: right; }
+    .anchor-card-name-ar {
+      font-family: var(--font-display);
+      font-size: var(--text-md);
+      color: var(--color-gold-200);
+      line-height: 1.2;
+    }
+    .anchor-card-name-en {
+      font-family: var(--font-heading);
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-gold-500);
+      direction: ltr;
+      display: block;
+    }
+    .anchor-tier-tag {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 0.7rem;
+      color: var(--color-gold-400);
+      direction: ltr;
+      flex-shrink: 0;
+    }
+    .anchor-card-body {
+      padding: var(--space-4) var(--space-4) var(--space-3);
+    }
+
+    /* ---- TIME CHIPS ---- */
+    .time-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      direction: ltr;
+    }
+    .time-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(196,146,42,0.3);
+      background: rgba(196,146,42,0.05);
+      font-family: var(--font-heading);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-gold-500);
+      cursor: pointer;
+      user-select: none;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .time-chip:hover {
+      background: rgba(196,146,42,0.12);
+      border-color: var(--color-gold-400);
+      color: var(--color-gold-300);
+    }
+    .time-chip.selected {
+      background: var(--color-gold-700);
+      border-color: var(--color-gold-500);
+      color: var(--color-gold-100);
+      box-shadow: 0 2px 10px rgba(196,146,42,0.35);
+    }
+    .chip-emoji { font-size: 13px; line-height: 1; }
+
+    /* ---- CONTINUE BAR ---- */
+    .continue-bar {
+      position: sticky;
+      bottom: 0;
+      padding: var(--space-4) var(--space-5);
+      background: linear-gradient(to top, var(--bg-page) 70%, transparent);
+      z-index: 40;
+      flex-shrink: 0;
+    }
+    .continue-btn {
+      display: block; width: 100%;
+      padding: 13px var(--space-6);
+      font-family: var(--font-heading);
+      font-size: var(--text-xs);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-align: center;
+      text-decoration: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-600));
+      color: var(--color-gold-100);
+      box-shadow: 0 2px 16px rgba(196,146,42,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+      position: relative; overflow: hidden;
+    }
+    .continue-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.08);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+    .continue-btn:hover::before { opacity: 1; }
+    .continue-btn:active { transform: scale(0.98); }
+    .continue-btn.disabled {
+      background: rgba(92,61,26,0.2);
+      color: var(--color-ink-300);
+      box-shadow: none;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* progress indicator */
+    .anchor-progress {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      direction: ltr;
+      padding: 0 var(--space-5) var(--space-4);
+    }
+    .progress-step {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex: 1;
+    }
+    .progress-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(196,146,42,0.2);
+      border: 1px solid rgba(196,146,42,0.3);
+      flex-shrink: 0;
+      transition: all var(--transition-base);
+    }
+    .progress-dot.anchored {
+      background: var(--color-gold-500);
+      border-color: var(--color-gold-400);
+      box-shadow: 0 0 6px rgba(196,146,42,0.5);
+    }
+    .progress-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(196,146,42,0.15);
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="screen">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>▌▌▌</span>
+        <span style="font-size:9px;">WiFi</span>
+        <span style="font-size:9px;">⬛</span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="app-header">
+      <a href="tiers.html" class="app-header-icon" style="text-decoration:none; font-size:var(--text-lg);">‹</a>
+      <div style="flex:1; text-align:center;">
+        <div class="app-header-title" style="font-size:var(--text-xl);">ورق</div>
+        <span class="app-header-title-latin">Anchor to Prayer</span>
+      </div>
+      <div style="width:36px;"></div>
+    </div>
+
+    <!-- Scroll area -->
+    <div class="scroll-area">
+      <div style="display:flex; flex-direction:column; padding-bottom: 88px;">
+
+        <!-- Heading -->
+        <div style="padding: var(--space-5) var(--space-5) var(--space-3); text-align:center; direction:ltr;">
+          <h1 style="
+            font-family: var(--font-heading);
+            font-size: var(--text-lg);
+            letter-spacing: 0.08em;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+          ">Anchor Each Habit</h1>
+          <p style="
+            font-family: var(--font-body);
+            font-style: italic;
+            font-size: var(--text-md);
+            color: var(--text-secondary);
+            line-height: var(--leading-relaxed);
+            max-width: 300px;
+            margin: 0 auto;
+          ">Habits stick when they attach to something you already do. The 5 prayers are nature's anchors.</p>
+        </div>
+
+        <!-- Progress dots row -->
+        <div class="anchor-progress" id="anchor-progress">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Ornament -->
+        <div style="padding: 0 var(--space-5) var(--space-4);">
+          <div class="orn-divider">
+            <div class="orn-divider-line"></div>
+            <span class="orn-divider-star">✦</span>
+            <div class="orn-divider-line"></div>
+          </div>
+        </div>
+
+        <!-- Cards -->
+        <div id="cards-container" style="padding: 0 var(--space-4); display:flex; flex-direction:column; gap:var(--space-4);">
+        </div>
+
+        <!-- Empty state -->
+        <div id="empty-notice" style="display:none; padding: var(--space-16) var(--space-8); text-align:center; direction:ltr;">
+          <p style="font-family:var(--font-body);font-style:italic;color:var(--text-muted);font-size:var(--text-md);">
+            No habits found. Go back and complete setup.
+          </p>
+          <a href="tiers.html" class="btn btn-ghost" style="display:block;margin-top:var(--space-5);text-decoration:none;direction:ltr;">‹ Back</a>
+        </div>
+
+        <!-- Hadith note -->
+        <div id="hadith-note" style="margin: var(--space-5) var(--space-5) 0; display:none;">
+          <div style="
+            background: rgba(42,28,4,0.5);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-4) var(--space-5);
+            text-align: center;
+          ">
+            <div style="
+              font-family: var(--font-display);
+              font-size: var(--text-xl);
+              color: var(--color-gold-300);
+              line-height: 1.5;
+              margin-bottom: var(--space-2);
+            ">الصلاة عماد الدين</div>
+            <div style="
+              font-family: var(--font-heading);
+              font-size: 0.55rem;
+              letter-spacing: 0.2em;
+              text-transform: uppercase;
+              color: var(--color-gold-500);
+              direction: ltr;
+            ">Prayer is the pillar of religion</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Sticky continue -->
+    <div class="continue-bar">
+      <button class="continue-btn disabled" id="continue-btn" onclick="goNext()">
+        Finish Setup — <span id="anchored-count">0</span> / <span id="total-count">3</span> anchored
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   DATA
+========================================================= */
+const TIME_SLOTS = [
+  { id: 'fajr',    label: 'After Fajr',    emoji: '<i class="fa-solid fa-sun"></i>' },
+  { id: 'dhuhr',   label: 'After Dhuhr',   emoji: '<i class="fa-solid fa-sun"></i>' },
+  { id: 'asr',     label: 'After Asr',     emoji: '<i class="fa-solid fa-cloud-sun"></i>' },
+  { id: 'maghrib', label: 'After Maghrib', emoji: '<i class="fa-solid fa-moon"></i>' },
+  { id: 'isha',    label: 'After Isha',    emoji: '<i class="fa-solid fa-star-and-crescent"></i>' },
+  { id: 'sleep',   label: 'Before Sleep',  emoji: '<i class="fa-solid fa-bed"></i>' },
+];
+
+const ICONS = {
+  '1':'<i class="fa-solid fa-mosque"></i>',
+  '2':'<i class="fa-solid fa-star"></i>',
+  '3':'<i class="fa-solid fa-book-open"></i>',
+  '4':'<i class="fa-solid fa-sun"></i>',
+  '5':'<i class="fa-solid fa-moon"></i>',
+  '6':'<i class="fa-solid fa-cloud-sun"></i>',
+  '7':'<i class="fa-solid fa-calendar-days"></i>',
+  '8':'<i class="fa-solid fa-circle-half-stroke"></i>',
+  '9':'<i class="fa-solid fa-hands-praying"></i>',
+  '10':'<i class="fa-solid fa-sparkles"></i>',
+  '11':'<i class="fa-solid fa-heart"></i>',
+  '12':'<i class="fa-solid fa-magnifying-glass"></i>',
+  '13':'<i class="fa-solid fa-users"></i>',
+  '14':'<i class="fa-solid fa-scroll"></i>',
+  '15':'<i class="fa-solid fa-hand-holding-heart"></i>'
+};
+
+/* habitId -> selected time slot id */
+const anchorState = {};
+let habits = [];
+
+/* =========================================================
+   INIT
+========================================================= */
+(function init() {
+  const src = localStorage.getItem('waraq_with_tiers') || localStorage.getItem('waraq_prioritized');
+  if (!src) {
+    document.getElementById('empty-notice').style.display = 'block';
+    document.getElementById('hadith-note').style.display  = 'none';
+    return;
+  }
+
+  habits = JSON.parse(src);
+  if (habits.length === 0) {
+    document.getElementById('empty-notice').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('total-count').textContent = habits.length;
+  document.getElementById('hadith-note').style.display = 'block';
+
+  buildProgressDots();
+  habits.forEach(function(h, i) {
+    document.getElementById('cards-container').appendChild(buildCard(h, i));
+  });
+
+  updateUI();
+})();
+
+/* =========================================================
+   PROGRESS DOTS
+========================================================= */
+function buildProgressDots() {
+  const row = document.getElementById('anchor-progress');
+  habits.forEach(function(h, i) {
+    if (i > 0) {
+      const line = document.createElement('div');
+      line.className = 'progress-line';
+      row.appendChild(line);
+    }
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot';
+    dot.id = 'pdot-' + h.id;
+    row.appendChild(dot);
+  });
+}
+
+/* =========================================================
+   BUILD CARD
+========================================================= */
+function buildCard(habit, cardIndex) {
+  const icon     = ICONS[habit.id] || '⭐';
+  const tierText = habit.tierLabel ? habit.tierLabel : (habit.selectedTier ? 'Tier ' + habit.selectedTier : '');
+
+  const card = document.createElement('div');
+  card.className = 'anchor-card fade-up';
+  card.id = 'acard-' + habit.id;
+  card.style.animationDelay = (cardIndex * 0.1) + 's';
+
+  /* Build chips HTML */
+  const chipsHtml = TIME_SLOTS.map(function(ts) {
+    return '<div class="time-chip" id="chip-' + habit.id + '-' + ts.id + '" ' +
+      'onclick="selectAnchor(\'' + habit.id + '\',\'' + ts.id + '\')">' +
+      '<span class="chip-emoji">' + ts.emoji + '</span>' + ts.label +
+    '</div>';
+  }).join('');
+
+  card.innerHTML =
+    '<div class="anchor-card-header">' +
+      '<div class="anchor-card-names">' +
+        '<div class="anchor-card-name-ar">' + habit.nameAr + '</div>' +
+        '<span class="anchor-card-name-en">' + habit.nameEn + '</span>' +
+      '</div>' +
+      (tierText ? '<div class="anchor-tier-tag">' + tierText + '</div>' : '') +
+      '<div class="anchor-card-icon">' + icon + '</div>' +
+    '</div>' +
+    '<div class="anchor-card-body">' +
+      '<div class="time-chips">' + chipsHtml + '</div>' +
+    '</div>';
+
+  return card;
+}
+
+/* =========================================================
+   SELECT ANCHOR
+========================================================= */
+function selectAnchor(habitId, slotId) {
+  anchorState[habitId] = slotId;
+
+  /* Update chips for this habit */
+  TIME_SLOTS.forEach(function(ts) {
+    const chip = document.getElementById('chip-' + habitId + '-' + ts.id);
+    if (chip) chip.classList.toggle('selected', ts.id === slotId);
+  });
+
+  /* Update card border */
+  const card = document.getElementById('acard-' + habitId);
+  if (card) card.classList.add('anchored');
+
+  /* Update progress dot */
+  const dot = document.getElementById('pdot-' + habitId);
+  if (dot) dot.classList.add('anchored');
+
+  updateUI();
+}
+
+/* =========================================================
+   UPDATE UI
+========================================================= */
+function updateUI() {
+  const anchored = Object.keys(anchorState).length;
+  const total    = habits.length;
+
+  document.getElementById('anchored-count').textContent = anchored;
+
+  const btn = document.getElementById('continue-btn');
+  if (anchored >= total) {
+    btn.classList.remove('disabled');
+    btn.textContent = 'Finish Setup ✦';
+  } else {
+    btn.classList.add('disabled');
+    btn.textContent = 'Finish Setup — ' + anchored + ' / ' + total + ' anchored';
+  }
+}
+
+/* =========================================================
+   FINISH → SAVE & NAVIGATE
+========================================================= */
+function goNext() {
+  if (Object.keys(anchorState).length < habits.length) return;
+
+  /* Enrich habits with anchor data */
+  const final = habits.map(function(h) {
+    const slotId  = anchorState[h.id];
+    const slot    = TIME_SLOTS.find(function(ts) { return ts.id === slotId; });
+    return Object.assign({}, h, {
+      anchor:      slotId,
+      anchorLabel: slot ? slot.label : '',
+      anchorEmoji: slot ? slot.emoji : '',
+    });
+  });
+
+  localStorage.setItem('waraq_final_habits', JSON.stringify(final));
+  waraqGo('../home/index.html');
+}
+</script>
+
+<script src="../../js/router.js"></script>
+</body>
+</html>

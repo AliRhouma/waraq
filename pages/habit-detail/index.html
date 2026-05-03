@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — قراءة القرآن</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { padding: 0; }
+    .fa-solid { line-height: 1; }
+
+    /* ── TOP BAR ── */
+    .detail-bar {
+      background: linear-gradient(135deg, var(--color-gold-900) 0%, var(--color-gold-800) 100%);
+      border-bottom: 1px solid var(--color-gold-600);
+      padding: var(--space-3) var(--space-4);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0; direction: ltr;
+    }
+    .detail-bar-btn {
+      width: 36px; height: 36px; border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: rgba(196,146,42,0.08);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-gold-300); font-size: 15px;
+      cursor: pointer; text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .detail-bar-btn:hover { background: rgba(196,146,42,0.18); border-color: var(--color-gold-400); }
+    .detail-bar-title {
+      font-family: var(--font-heading); font-size: 0.55rem;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--color-gold-400);
+    }
+
+    /* ── HERO ── */
+    .hero-block {
+      background: linear-gradient(160deg, var(--color-gold-900) 0%, var(--color-gold-800) 60%, var(--bg-page) 100%);
+      border-bottom: 1px solid var(--color-gold-600);
+      padding: var(--space-6) var(--space-5) var(--space-5);
+      text-align: center; direction: rtl;
+      position: relative; overflow: hidden;
+    }
+    .hero-block::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(196,146,42,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-name-ar {
+      font-family: var(--font-display); font-size: 2.5rem;
+      color: var(--color-gold-100); line-height: 1.2;
+      text-shadow: 0 2px 20px rgba(196,146,42,0.3);
+    }
+    .hero-name-en {
+      font-family: var(--font-heading); font-size: 0.65rem;
+      letter-spacing: 0.35em; text-transform: uppercase;
+      color: var(--color-gold-400); direction: ltr;
+      display: block; margin-top: var(--space-2);
+    }
+    .hero-divider { margin: var(--space-4) auto; max-width: 200px; }
+    .hero-tier-badge {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      padding: 5px 14px; border-radius: var(--radius-full);
+      background: rgba(196,146,42,0.12); border: 1px solid rgba(196,146,42,0.35);
+      font-family: var(--font-heading); font-size: 0.58rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--color-gold-300);
+    }
+    .hero-anchor {
+      display: flex; align-items: center; justify-content: center;
+      gap: var(--space-2); margin-top: var(--space-3); direction: ltr;
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-sm); color: var(--color-gold-500);
+    }
+
+    /* ── SECTIONS ── */
+    .detail-scroll {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      padding-bottom: var(--space-6);
+    }
+    .detail-scroll::-webkit-scrollbar { display: none; }
+    .detail-section { padding: var(--space-5) var(--space-5) 0; }
+    .detail-section-head {
+      display: flex; align-items: center; gap: var(--space-3);
+      margin-bottom: var(--space-4); direction: ltr;
+    }
+    .detail-section-title {
+      font-family: var(--font-heading); font-size: 0.58rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--color-gold-500); flex-shrink: 0;
+    }
+    .detail-section-line {
+      flex: 1; height: 1px;
+      background: linear-gradient(to right, rgba(196,146,42,0.3), transparent);
+    }
+
+    /* ── TODAY CARD ── */
+    .today-card {
+      background: var(--bg-card); border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      text-align: center; direction: ltr;
+      position: relative; overflow: hidden;
+    }
+    .today-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(to right, transparent, var(--color-gold-500), transparent);
+    }
+    .today-tap-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) 0;
+    }
+    .today-circle {
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 2px solid rgba(196,146,42,0.5);
+      background: rgba(196,146,42,0.04);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all var(--transition-base);
+      position: relative; font-size: 28px; color: transparent;
+    }
+    .today-circle:hover {
+      border-color: var(--color-gold-400);
+      background: rgba(196,146,42,0.08);
+      box-shadow: 0 0 20px rgba(196,146,42,0.25);
+      transform: scale(1.03);
+    }
+    .today-circle.done {
+      background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-600));
+      border-color: var(--color-gold-400);
+      box-shadow: 0 0 30px rgba(196,146,42,0.5), 0 0 0 8px rgba(196,146,42,0.1);
+      color: var(--color-gold-100);
+    }
+    .today-circle-inner { font-size: 28px; line-height: 1; }
+    .today-ring {
+      position: absolute; inset: -6px; border-radius: 50%;
+      border: 2px solid var(--color-gold-400);
+      opacity: 0; pointer-events: none;
+    }
+    @keyframes ring-burst {
+      0%   { transform: scale(0.9); opacity: 0.9; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+    .today-ring.burst { animation: ring-burst 0.6s ease-out forwards; }
+    .today-label {
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-md); color: var(--text-muted);
+      transition: color var(--transition-base);
+      min-height: 1.5em;
+    }
+    .today-label.done { color: var(--color-gold-500); }
+    .today-reflection {
+      margin-top: var(--space-4); border-top: 1px solid rgba(196,146,42,0.12);
+      padding-top: var(--space-4);
+    }
+    .ds-input {
+      width: 100%; box-sizing: border-box;
+      background: rgba(196,146,42,0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-sm); color: var(--text-primary);
+      outline: none; resize: none; direction: ltr;
+      transition: border-color var(--transition-fast);
+    }
+    .ds-input::placeholder { color: var(--text-muted); }
+    .ds-input:focus { border-color: var(--color-gold-500); box-shadow: 0 0 0 3px rgba(196,146,42,0.1); }
+
+    /* ── WEEK DOTS ── */
+    .week-row {
+      display: flex; gap: var(--space-2); align-items: center;
+      justify-content: center; direction: ltr; margin-bottom: var(--space-3);
+    }
+    .week-dot-wrap { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .week-dot {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1.5px solid rgba(196,146,42,0.2);
+      background: rgba(196,146,42,0.04);
+      transition: all var(--transition-base);
+    }
+    .week-dot.filled {
+      background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-500));
+      border-color: var(--color-gold-400);
+      box-shadow: 0 0 10px rgba(196,146,42,0.4);
+    }
+    .week-dot.today {
+      border-color: var(--color-gold-400); border-style: dashed;
+      box-shadow: 0 0 0 3px rgba(196,146,42,0.12);
+    }
+    .week-dot.future { opacity: 0.35; }
+    .week-day-label {
+      font-family: var(--font-heading); font-size: 0.42rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .week-day-label.today-lbl { color: var(--color-gold-500); }
+    .week-sub {
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-sm); color: var(--text-secondary);
+      text-align: center; direction: ltr;
+    }
+
+    /* ── JOURNEY TIMELINE ── */
+    .journey-list { display: flex; flex-direction: column; gap: 0; }
+    .journey-item {
+      display: flex; gap: var(--space-4); align-items: flex-start;
+      direction: ltr; position: relative; padding-bottom: var(--space-4);
+    }
+    .journey-item:not(:last-child)::before {
+      content: '';
+      position: absolute; left: 15px; top: 32px;
+      width: 2px; bottom: 0;
+      background: linear-gradient(to bottom, rgba(196,146,42,0.3), rgba(196,146,42,0.05));
+    }
+    .journey-marker {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid rgba(196,146,42,0.25);
+      background: var(--bg-card);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--color-gold-600);
+      transition: all var(--transition-base); position: relative; z-index: 1;
+    }
+    .journey-item.active .journey-marker {
+      background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-600));
+      border-color: var(--color-gold-400);
+      box-shadow: 0 0 14px rgba(196,146,42,0.4);
+      color: var(--color-gold-100);
+    }
+    .journey-item.locked .journey-marker { opacity: 0.45; }
+    .journey-body { flex: 1; padding-top: 6px; }
+    .journey-tier-label {
+      font-family: var(--font-heading); font-size: 0.6rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-primary);
+    }
+    .journey-item.locked .journey-tier-label { color: var(--text-muted); }
+    .journey-tier-desc {
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-sm); color: var(--text-secondary);
+      margin-top: 2px; direction: ltr;
+    }
+    .journey-item.active .journey-tier-desc { color: var(--color-gold-500); }
+    .journey-note {
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-sm); color: var(--text-muted);
+      direction: ltr; margin-top: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: rgba(196,146,42,0.04);
+      border: 1px solid rgba(196,146,42,0.12);
+      border-radius: var(--radius-md);
+    }
+
+    /* ── REFLECTION CARDS ── */
+    .reflection-card {
+      background: var(--bg-card); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-5);
+      margin-bottom: var(--space-3);
+      position: relative; overflow: hidden;
+    }
+    .reflection-card::before {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 3px; height: 100%;
+      background: linear-gradient(to bottom, var(--color-gold-500), transparent);
+    }
+    .reflection-date {
+      font-family: var(--font-heading); font-size: 0.5rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--color-gold-500); direction: ltr; margin-bottom: var(--space-2);
+    }
+    .reflection-text-en {
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-md); color: var(--text-secondary);
+      direction: ltr; line-height: var(--leading-relaxed);
+    }
+    .reflection-text-ar {
+      font-family: 'Scheherazade New', var(--font-display);
+      font-size: var(--text-lg); color: var(--text-primary);
+      direction: rtl; line-height: var(--leading-relaxed);
+    }
+
+    /* ── BOTTOM ACTIONS ── */
+    .bottom-actions {
+      padding: var(--space-5);
+      display: flex; gap: var(--space-3); direction: ltr;
+      border-top: 1px solid rgba(196,146,42,0.1);
+      margin-top: var(--space-5);
+      flex-shrink: 0;
+    }
+    .btn-secondary {
+      flex: 1; padding: 12px var(--space-4);
+      font-family: var(--font-heading); font-size: 0.6rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      border: 1.5px solid var(--color-gold-600);
+      border-radius: var(--radius-sm);
+      background: transparent; color: var(--color-gold-400);
+      cursor: pointer; transition: all var(--transition-base);
+    }
+    .btn-secondary:hover { background: rgba(196,146,42,0.08); color: var(--color-gold-200); }
+    .btn-ghost {
+      flex: 1; padding: 12px var(--space-4);
+      font-family: var(--font-heading); font-size: 0.6rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      border: 1px solid rgba(196,146,42,0.2);
+      border-radius: var(--radius-sm);
+      background: transparent; color: var(--text-muted);
+      cursor: pointer; transition: all var(--transition-base);
+    }
+    .btn-ghost:hover { border-color: rgba(196,146,42,0.4); color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="screen" style="display:flex; flex-direction:column;">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>▌▌▌</span>
+        <span style="font-size:9px;">WiFi</span>
+        <span style="font-size:9px;">⬛</span>
+      </div>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="detail-bar">
+      <a href="../home/index.html" class="detail-bar-btn">
+        <i class="fa-solid fa-arrow-right-to-bracket fa-flip-horizontal"></i>
+      </a>
+      <span class="detail-bar-title">Habit Detail</span>
+      <button class="detail-bar-btn" onclick="void(0)" style="background:none;border:1px solid var(--border-subtle);">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </button>
+    </div>
+
+    <!-- Hero Block -->
+    <div class="hero-block">
+      <div class="hero-name-ar">قراءة القرآن</div>
+      <span class="hero-name-en">Quran Reading</span>
+      <div class="hero-divider">
+        <div class="orn-divider">
+          <div class="orn-divider-line"></div>
+          <span class="orn-divider-diamond"></span>
+          <span class="orn-divider-star">✦</span>
+          <span class="orn-divider-diamond"></span>
+          <div class="orn-divider-line"></div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:var(--space-2);">
+        <div class="hero-tier-badge">
+          <i class="fa-solid fa-chart-simple" style="font-size:10px;"></i>
+          Tier 1 · 1 ayah per day
+        </div>
+        <div class="hero-anchor">
+          <i class="fa-solid fa-sun" style="font-size:12px;"></i>
+          After Fajr
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="detail-scroll">
+
+      <!-- TODAY -->
+      <div class="detail-section fade-up-1">
+        <div class="detail-section-head">
+          <span class="detail-section-title">Today</span>
+          <div class="detail-section-line"></div>
+        </div>
+        <div class="today-card">
+          <div class="today-tap-wrap">
+            <div class="today-circle" id="today-circle" onclick="markDone()">
+              <div class="today-ring" id="today-ring"></div>
+              <span class="today-circle-inner" id="today-icon"></span>
+            </div>
+            <div class="today-label" id="today-label">Mark as done</div>
+          </div>
+          <div class="today-reflection">
+            <textarea
+              class="ds-input"
+              rows="2"
+              placeholder="Add a reflection (optional)…"
+              id="reflection-input"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- THIS WEEK -->
+      <div class="detail-section fade-up-2">
+        <div class="detail-section-head">
+          <span class="detail-section-title">This Week</span>
+          <div class="detail-section-line"></div>
+        </div>
+        <div class="week-row" id="week-row"></div>
+        <p class="week-sub" id="week-sub">5 of last 7 days</p>
+      </div>
+
+      <!-- YOUR JOURNEY -->
+      <div class="detail-section fade-up-3" style="margin-top:var(--space-3);">
+        <div class="detail-section-head">
+          <span class="detail-section-title">Your Journey</span>
+          <div class="detail-section-line"></div>
+        </div>
+        <div class="journey-list">
+          <div class="journey-item active">
+            <div class="journey-marker"><i class="fa-solid fa-check" style="font-size:10px;"></i></div>
+            <div class="journey-body">
+              <div class="journey-tier-label">Tier 1 — Started Mar 15</div>
+              <div class="journey-tier-desc">1 ayah per day · currently here</div>
+            </div>
+          </div>
+          <div class="journey-item locked">
+            <div class="journey-marker"><i class="fa-solid fa-lock" style="font-size:10px;"></i></div>
+            <div class="journey-body">
+              <div class="journey-tier-label">Tier 2</div>
+              <div class="journey-tier-desc">1 page per day</div>
+            </div>
+          </div>
+          <div class="journey-item locked">
+            <div class="journey-marker"><i class="fa-solid fa-lock" style="font-size:10px;"></i></div>
+            <div class="journey-body">
+              <div class="journey-tier-label">Tier 3</div>
+              <div class="journey-tier-desc">Half juz per day</div>
+            </div>
+          </div>
+          <div class="journey-item locked">
+            <div class="journey-marker"><i class="fa-solid fa-lock" style="font-size:10px;"></i></div>
+            <div class="journey-body">
+              <div class="journey-tier-label">Tier 4</div>
+              <div class="journey-tier-desc">1 juz per day</div>
+            </div>
+          </div>
+        </div>
+        <div class="journey-note">
+          Graduate to Tier 2 after 7 consistent days.
+        </div>
+      </div>
+
+      <!-- REFLECTIONS -->
+      <div class="detail-section fade-up-3" style="margin-top:var(--space-3);">
+        <div class="detail-section-head">
+          <span class="detail-section-title">Reflections</span>
+          <div class="detail-section-line"></div>
+        </div>
+
+        <div class="reflection-card">
+          <div class="reflection-date">14 Mar 2026</div>
+          <div class="reflection-text-en">Felt peaceful reading after Fajr today — the house was quiet and the words settled deep.</div>
+        </div>
+
+        <div class="reflection-card">
+          <div class="reflection-date">١٢ رمضان</div>
+          <div class="reflection-text-ar">تدبرت معنى الآية اليوم — سبحان الله</div>
+        </div>
+
+        <div class="reflection-card">
+          <div class="reflection-date">10 Mar 2026</div>
+          <div class="reflection-text-en">Only managed one ayah but it was enough. Consistency over volume.</div>
+        </div>
+      </div>
+
+      <!-- Bottom spacer -->
+      <div style="height: var(--space-4);"></div>
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="bottom-actions">
+      <button class="btn-secondary" onclick="alert('Coming soon')">
+        <i class="fa-solid fa-sliders" style="margin-left:6px;font-size:10px;"></i>
+        Adjust Tier
+      </button>
+      <button class="btn-ghost">
+        <i class="fa-solid fa-pause" style="margin-left:6px;font-size:10px;"></i>
+        Pause Habit
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── WEEK BUILDER ── */
+(function buildWeek() {
+  const days  = ['M','T','W','T','F','S','S'];
+  const done  = [true, true, false, true, true, true, false];
+  const today = 6; /* 0-indexed, Sunday = last */
+  const row   = document.getElementById('week-row');
+  let filled  = 0;
+
+  days.forEach(function(d, i) {
+    const wrap = document.createElement('div');
+    wrap.className = 'week-dot-wrap';
+    const dot = document.createElement('div');
+    dot.className = 'week-dot';
+    if (i < today && done[i]) { dot.classList.add('filled'); filled++; }
+    if (i === today) dot.classList.add('today');
+    if (i > today)  dot.classList.add('future');
+    const lbl = document.createElement('span');
+    lbl.className = 'week-day-label' + (i === today ? ' today-lbl' : '');
+    lbl.textContent = d;
+    wrap.appendChild(dot);
+    wrap.appendChild(lbl);
+    row.appendChild(wrap);
+  });
+
+  document.getElementById('week-sub').textContent = filled + ' of last 7 days';
+})();
+
+/* ── MARK DONE ── */
+var isDone = false;
+
+function markDone() {
+  if (isDone) return;
+  isDone = true;
+
+  const circle = document.getElementById('today-circle');
+  const icon   = document.getElementById('today-icon');
+  const label  = document.getElementById('today-label');
+  const ring   = document.getElementById('today-ring');
+
+  circle.classList.add('done');
+  icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+  label.textContent = 'Done — alhamdulillah';
+  label.classList.add('done');
+
+  ring.classList.remove('burst');
+  void ring.offsetWidth;
+  ring.classList.add('burst');
+  setTimeout(function() { ring.classList.remove('burst'); }, 700);
+
+  /* enable reflection input */
+  document.getElementById('reflection-input').focus();
+}
+</script>
+<script src="../../js/router.js"></script>
+</body>
+</html>

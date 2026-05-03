@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — الإعدادات</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { padding: 0; }
+    .fa-solid { line-height: 1; }
+
+    /* ── HEADER ── */
+    .set-header {
+      background: linear-gradient(135deg, var(--color-gold-900) 0%, var(--color-gold-800) 100%);
+      border-bottom: 1px solid var(--color-gold-600);
+      padding: var(--space-3) var(--space-4);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0; direction: ltr;
+    }
+    .set-header-btn {
+      width: 36px; height: 36px; border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: rgba(196,146,42,0.08);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-gold-300); font-size: 15px;
+      cursor: pointer; text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .set-header-btn:hover { background: rgba(196,146,42,0.18); }
+    .set-header-title {
+      font-family: var(--font-heading); font-size: var(--text-xs);
+      letter-spacing: 0.3em; text-transform: uppercase; color: var(--color-gold-300);
+    }
+    .set-header-spacer { width: 36px; }
+
+    /* ── SCROLL ── */
+    .set-scroll {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      padding: var(--space-4) var(--space-4) var(--space-2);
+    }
+    .set-scroll::-webkit-scrollbar { display: none; }
+
+    /* ── PROFILE CARD ── */
+    .profile-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--color-gold-600);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-5);
+      display: flex; align-items: center; gap: var(--space-4);
+      direction: ltr; margin-bottom: var(--space-5);
+      position: relative; overflow: hidden;
+    }
+    .profile-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(to right, transparent, var(--color-gold-400), transparent);
+    }
+    .profile-avatar {
+      width: 60px; height: 60px; border-radius: 50%;
+      border: 2px solid var(--color-gold-500);
+      background: linear-gradient(135deg, var(--color-gold-800), var(--color-gold-700));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 1.6rem;
+      color: var(--color-gold-200); flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(196,146,42,0.3);
+    }
+    .profile-info { flex: 1; }
+    .profile-name {
+      font-family: var(--font-heading); font-size: 0.75rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--text-primary);
+    }
+    .profile-email {
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-sm); color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .profile-edit {
+      font-family: var(--font-heading); font-size: 0.48rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--color-gold-500); text-decoration: none;
+      padding: 4px 10px; border-radius: var(--radius-full);
+      border: 1px solid rgba(196,146,42,0.3);
+      transition: all var(--transition-fast); flex-shrink: 0;
+    }
+    .profile-edit:hover { background: rgba(196,146,42,0.08); border-color: var(--color-gold-400); }
+
+    /* ── SECTION ── */
+    .settings-section { margin-bottom: var(--space-5); }
+    .section-title {
+      font-family: var(--font-heading); font-size: 0.5rem;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--color-gold-500); direction: ltr;
+      margin-bottom: var(--space-2); padding: 0 var(--space-1);
+    }
+    .settings-group {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    /* ── ROW ── */
+    .set-row {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: 13px var(--space-4);
+      border-bottom: 1px solid rgba(196,146,42,0.08);
+      direction: ltr; cursor: pointer;
+      transition: background var(--transition-fast);
+      text-decoration: none; color: inherit;
+    }
+    .set-row:last-child { border-bottom: none; }
+    .set-row:hover { background: rgba(196,146,42,0.04); }
+    .set-row.danger .set-row-label { color: rgba(200,90,90,0.8); }
+    .set-row.danger:hover { background: rgba(180,60,60,0.04); }
+    .set-row-label {
+      flex: 1;
+      font-family: var(--font-heading); font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-primary);
+    }
+    .set-row-value {
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-sm); color: var(--text-muted);
+    }
+    .set-row-chevron { color: var(--text-muted); font-size: 11px; opacity: 0.6; }
+
+    /* ── TOGGLE ── */
+    .toggle-wrap {
+      width: 42px; height: 24px; border-radius: 12px;
+      background: rgba(196,146,42,0.15);
+      border: 1px solid rgba(196,146,42,0.25);
+      position: relative; cursor: pointer;
+      transition: all var(--transition-base); flex-shrink: 0;
+    }
+    .toggle-wrap.on {
+      background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-600));
+      border-color: var(--color-gold-500);
+      box-shadow: 0 0 10px rgba(196,146,42,0.3);
+    }
+    .toggle-knob {
+      position: absolute; top: 2px; left: 2px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--color-gold-300);
+      transition: transform var(--transition-base), background var(--transition-base);
+    }
+    .toggle-wrap.on .toggle-knob {
+      transform: translateX(18px);
+      background: var(--color-gold-100);
+    }
+
+    /* ── SLIDER ── */
+    .slider-row { display: flex; align-items: center; gap: var(--space-3); direction: ltr; }
+    .slider-label-sm {
+      font-family: var(--font-heading); font-size: 0.42rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    input[type=range] {
+      flex: 1; -webkit-appearance: none; appearance: none;
+      height: 4px; border-radius: 2px;
+      background: rgba(196,146,42,0.2); outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-gold-500), var(--color-gold-400));
+      cursor: pointer; border: 2px solid var(--color-gold-300);
+      box-shadow: 0 0 8px rgba(196,146,42,0.4);
+    }
+    input[type=range]::-moz-range-thumb {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-gold-500), var(--color-gold-400));
+      cursor: pointer; border: 2px solid var(--color-gold-300);
+    }
+
+    /* ── VERSION ROW ── */
+    .version-row {
+      display: flex; align-items: center; padding: 12px var(--space-4);
+      border-bottom: 1px solid rgba(196,146,42,0.08); direction: ltr;
+    }
+    .version-row:last-child { border-bottom: none; }
+    .version-label {
+      flex: 1; font-family: var(--font-heading); font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);
+    }
+    .version-value {
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-sm); color: var(--text-muted); opacity: 0.7;
+    }
+
+    /* ── FOOTER ── */
+    .set-footer {
+      padding: var(--space-5) var(--space-4) var(--space-4);
+      text-align: center; direction: ltr;
+    }
+    .set-footer-bismillah {
+      font-family: var(--font-display); font-size: 1.4rem;
+      color: var(--color-gold-500); opacity: 0.6;
+    }
+    .set-footer-ornament {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      margin: var(--space-2) 0;
+    }
+    .sfo-line { width: 36px; height: 1px; background: rgba(196,146,42,0.2); }
+    .sfo-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(196,146,42,0.4); }
+    .set-footer-name {
+      font-family: var(--font-display); font-size: 0.9rem;
+      color: var(--color-gold-500); opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="screen" style="display:flex; flex-direction:column;">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>▌▌▌</span><span style="font-size:9px;">WiFi</span><span style="font-size:9px;">⬛</span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="set-header">
+      <a href="../home/index.html" class="set-header-btn">
+        <i class="fa-solid fa-arrow-right-to-bracket fa-flip-horizontal"></i>
+      </a>
+      <span class="set-header-title">Settings</span>
+      <div class="set-header-spacer"></div>
+    </div>
+
+    <!-- Scroll -->
+    <div class="set-scroll">
+
+      <!-- Profile Card -->
+      <div class="profile-card">
+        <div class="profile-avatar">أ</div>
+        <div class="profile-info">
+          <div class="profile-name">Ahmad</div>
+          <div class="profile-email">ahmad@example.com</div>
+        </div>
+        <a class="profile-edit" onclick="cs()">Edit</a>
+      </div>
+
+      <!-- Prayer & Location -->
+      <div class="settings-section">
+        <div class="section-title">Prayer & Location</div>
+        <div class="settings-group">
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Location</span>
+            <span class="set-row-value">Tunis, Tunisia</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Calculation Method</span>
+            <span class="set-row-value">Muslim World League</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Madhhab</span>
+            <span class="set-row-value">Maliki</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Adjustments</span>
+            <span class="set-row-value">Default</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="settings-section">
+        <div class="section-title">Notifications</div>
+        <div class="settings-group">
+          <div class="set-row" style="cursor:default;">
+            <span class="set-row-label">Prayer Reminders</span>
+            <div class="toggle-wrap on" id="tog-prayer" onclick="toggle(this)">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+          <div class="set-row" style="cursor:default;">
+            <span class="set-row-label">Habit Anchor Reminders</span>
+            <div class="toggle-wrap on" id="tog-habit" onclick="toggle(this)">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+          <div class="set-row" style="cursor:default;">
+            <span class="set-row-label">Weekly Check-In</span>
+            <div class="toggle-wrap on" id="tog-checkin" onclick="toggle(this)">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Notification Timing</span>
+            <span class="set-row-value">10 min before</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appearance -->
+      <div class="settings-section">
+        <div class="section-title">Appearance</div>
+        <div class="settings-group">
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Theme</span>
+            <span class="set-row-value">Manuscript Light</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Language</span>
+            <span class="set-row-value">English</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+          <div class="set-row" style="flex-direction:column; align-items:stretch; gap:10px; cursor:default;">
+            <span class="set-row-label" style="margin-bottom:0;">Arabic Text Size</span>
+            <div class="slider-row">
+              <span class="slider-label-sm">A</span>
+              <input type="range" min="1" max="5" value="3" id="font-slider">
+              <span class="slider-label-sm" style="font-size:0.6rem;">A</span>
+            </div>
+          </div>
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Quran Font</span>
+            <span class="set-row-value">KFGQPC Uthmanic</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Habits -->
+      <div class="settings-section">
+        <div class="section-title">Habits</div>
+        <div class="settings-group">
+          <a href="../library/index.html" class="set-row">
+            <span class="set-row-label">Manage Habits</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </a>
+          <div class="set-row danger" onclick="cs()">
+            <span class="set-row-label">Reset Progress</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron" style="color:rgba(200,90,90,0.5);"></i>
+          </div>
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Pause All Habits</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="settings-section">
+        <div class="section-title">About</div>
+        <div class="settings-group">
+          <div class="version-row">
+            <span class="version-label">Version</span>
+            <span class="version-value">1.0.0</span>
+          </div>
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Privacy Policy</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Send Feedback</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+          <div class="set-row" onclick="cs()">
+            <span class="set-row-label">Acknowledgments</span>
+            <i class="fa-solid fa-chevron-right set-row-chevron"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="set-footer">
+        <div class="set-footer-bismillah">بِسْمِ ٱللَّٰهِ</div>
+        <div class="set-footer-ornament">
+          <div class="sfo-line"></div>
+          <div class="sfo-dot"></div>
+          <span style="color:rgba(196,146,42,0.3);font-size:10px;">✦</span>
+          <div class="sfo-dot"></div>
+          <div class="sfo-line"></div>
+        </div>
+        <div class="set-footer-name">ورق · Waraq</div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+      <a href="../home/index.html" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-house"></i></span>
+        <span class="nav-label">Home</span>
+      </a>
+      <a href="../library/index.html" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-book-open"></i></span>
+        <span class="nav-label">Library</span>
+      </a>
+      <a href="../insights/index.html" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+        <span class="nav-label">Insights</span>
+      </a>
+      <a href="#" class="nav-item active">
+        <span class="nav-icon"><i class="fa-solid fa-sliders"></i></span>
+        <span class="nav-label">Settings</span>
+      </a>
+    </nav>
+
+  </div>
+</div>
+
+<script>
+function cs() { /* coming soon — placeholder */ }
+function toggle(el) { el.classList.toggle('on'); }
+</script>
+<script src="../../js/router.js"></script>
+</body>
+</html>

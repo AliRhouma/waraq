@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — طريقة الخطوات الصغيرة</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { padding: 0; }
+
+    .method-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      direction: rtl;
+      position: relative;
+    }
+    .method-card-icon {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--color-gold-900), var(--color-gold-800));
+      border: 1px solid var(--color-gold-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .method-card-content { flex: 1; }
+    .method-card-number {
+      font-family: var(--font-heading);
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--color-gold-500);
+      margin-bottom: 4px;
+      direction: ltr;
+    }
+    .method-card-title {
+      font-family: var(--font-arabic);
+      font-size: var(--text-md);
+      color: var(--text-primary);
+      line-height: var(--leading-snug);
+      margin-bottom: var(--space-2);
+    }
+    .method-card-title-latin {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      direction: ltr;
+      display: block;
+      margin-bottom: var(--space-2);
+    }
+    .method-card-desc {
+      font-family: var(--font-arabic);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: var(--leading-relaxed);
+    }
+    .method-accent-bar {
+      position: absolute;
+      top: 0; right: 0;
+      width: 3px;
+      height: 100%;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      background: var(--color-gold-500);
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="screen">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>▌▌▌</span>
+        <span style="font-size:9px;">WiFi</span>
+        <span style="font-size:9px;">⬛</span>
+      </div>
+    </div>
+
+    <!-- App Header -->
+    <div class="app-header" style="justify-content: flex-start; gap: var(--space-4);">
+      <a href="04-assessment.html" class="app-header-icon" style="text-decoration:none; font-size:var(--text-lg);">‹</a>
+      <div>
+        <div class="app-header-title" style="font-size: var(--text-xl);">ورق</div>
+        <span class="app-header-title-latin">The Method</span>
+      </div>
+    </div>
+
+    <div class="scroll-area">
+      <div style="padding: var(--space-6) var(--space-5) var(--space-8); display: flex; flex-direction: column; gap: var(--space-5);">
+
+        <!-- Progress dots -->
+        <div style="display: flex; gap: 8px; align-items: center; justify-content: center;">
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.35);"></div>
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.35);"></div>
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.35);"></div>
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.35);"></div>
+          <div style="width:28px;height:4px;border-radius:2px;background:var(--color-gold-400);box-shadow:0 0 8px rgba(196,146,42,0.5);"></div>
+        </div>
+
+        <!-- Heading -->
+        <div class="fade-up" style="text-align: center;">
+          <h1 style="
+            font-family: var(--font-arabic);
+            font-size: var(--text-2xl);
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+          ">طريقة الخطوات الصغيرة</h1>
+          <p style="
+            font-family: var(--font-body);
+            font-style: italic;
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            direction: ltr;
+          ">The Tiny Steps Method</p>
+        </div>
+
+        <!-- Divider -->
+        <div class="fade-up-1">
+          <div class="orn-divider">
+            <div class="orn-divider-line"></div>
+            <span class="orn-divider-diamond"></span>
+            <span class="orn-divider-star">✦</span>
+            <span class="orn-divider-diamond"></span>
+            <div class="orn-divider-line"></div>
+          </div>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="method-card fade-up-1">
+          <div class="method-accent-bar"></div>
+          <div class="method-card-content">
+            <div class="method-card-number">Step 01</div>
+            <div class="method-card-title">ابدأ أصغر مما تتخيّل</div>
+            <span class="method-card-title-latin">"Start tinier than you think"</span>
+            <div class="method-card-desc">
+              آيتان من القرآن أفضل من لا شيء. ركعتان أفضل من لا صلاة.
+              الاستمرارية تبدأ من خطوة واحدة صغيرة.
+            </div>
+          </div>
+          <div class="method-card-icon"><i class="fa-solid fa-seedling"></i></div>
+        </div>
+
+        <!-- Diamond divider -->
+        <div class="fade-up-2">
+          <div class="orn-divider" style="padding: 0 var(--space-4);">
+            <div class="orn-divider-line"></div>
+            <span class="orn-divider-diamond"></span>
+            <div class="orn-divider-line"></div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="method-card fade-up-2">
+          <div class="method-accent-bar" style="background: var(--color-accent-emerald);"></div>
+          <div class="method-card-content">
+            <div class="method-card-number">Step 02</div>
+            <div class="method-card-title">اربط العادات بأوقات الصلاة</div>
+            <span class="method-card-title-latin">"Anchor habits to prayer times"</span>
+            <div class="method-card-desc">
+              الصلاة هي مرساة يومك. اجعل كل عادة جديدة ترتبط بصلاة محددة
+              — فجراً، أو مغرباً، أو عشاءً.
+            </div>
+          </div>
+          <div class="method-card-icon"><i class="fa-solid fa-anchor"></i></div>
+        </div>
+
+        <!-- Diamond divider -->
+        <div class="fade-up-3">
+          <div class="orn-divider" style="padding: 0 var(--space-4);">
+            <div class="orn-divider-line"></div>
+            <span class="orn-divider-diamond"></span>
+            <div class="orn-divider-line"></div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="method-card fade-up-3">
+          <div class="method-accent-bar" style="background: var(--color-accent-lapis);"></div>
+          <div class="method-card-content">
+            <div class="method-card-number">Step 03</div>
+            <div class="method-card-title">تدرَّج حين تثبت — لا قبل ذلك</div>
+            <span class="method-card-title-latin">"Graduate when consistent, not before"</span>
+            <div class="method-card-desc">
+              لا تزد في العادة حتى تصبح عادتك الصغيرة سهلة وثابتة.
+              الثبات أولاً، ثم الزيادة.
+            </div>
+          </div>
+          <div class="method-card-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+        </div>
+
+        <!-- Hadith note -->
+        <div class="fade-up-4" style="
+          background: rgba(42,28,4,0.5);
+          border: 1px solid var(--border-subtle);
+          border-radius: var(--radius-md);
+          padding: var(--space-4) var(--space-5);
+          text-align: center;
+        ">
+          <div style="
+            font-family: var(--font-display);
+            font-size: var(--text-xl);
+            color: var(--color-gold-300);
+            line-height: 1.5;
+            margin-bottom: var(--space-2);
+          ">أحبُّ الأعمال إلى الله أدومها وإن قلَّ</div>
+          <div style="
+            font-family: var(--font-heading);
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-gold-500);
+            direction: ltr;
+          ">Sahih Muslim — Hadith 783</div>
+        </div>
+
+        <!-- Let's Begin button -->
+        <div class="fade-up-4">
+          <a href="../library/index.html" class="btn btn-primary" style="
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            direction: ltr;
+            font-size: var(--text-sm);
+            letter-spacing: 0.25em;
+          ">Let's Begin ✦</a>
+        </div>
+
+        <!-- Bottom ornament -->
+        <div>
+          <div class="orn-divider">
+            <div class="orn-divider-line"></div>
+            <span class="orn-divider-star">✦</span>
+            <div class="orn-divider-line"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="../../js/router.js"></script>
+</body>
+</html>

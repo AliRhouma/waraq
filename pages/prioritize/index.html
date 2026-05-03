@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — اختر ثلاثة</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    .fa-solid { line-height: 1; }
+    body { padding: 0; }
+
+    /* ---- PRIORITY CARD ---- */
+    .pri-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      direction: rtl;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+    .pri-card:hover {
+      border-color: rgba(196,146,42,0.45);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-soft);
+    }
+    .pri-card.chosen {
+      border-color: var(--color-gold-500);
+      background: rgba(196,146,42,0.05);
+      box-shadow: 0 0 0 3px rgba(196,146,42,0.1), var(--shadow-soft);
+    }
+    .pri-card.chosen::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 3px; height: 100%;
+      background: var(--color-gold-500);
+    }
+
+    /* priority number badge */
+    .pri-badge {
+      position: absolute;
+      top: var(--space-2);
+      left: var(--space-2);
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--color-gold-700);
+      border: 1.5px solid var(--color-gold-500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--color-gold-100);
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all var(--transition-base);
+      box-shadow: 0 0 8px rgba(196,146,42,0.5);
+      z-index: 2;
+    }
+    .pri-card.chosen .pri-badge {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .pri-icon {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--color-gold-900), var(--color-gold-800));
+      border: 1px solid var(--color-gold-700);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      transition: all var(--transition-base);
+    }
+    .pri-card.chosen .pri-icon {
+      border-color: var(--color-gold-500);
+    }
+
+    .pri-text { flex: 1; min-width: 0; }
+    .pri-name-ar {
+      font-family: var(--font-display);
+      font-size: var(--text-md);
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .pri-name-en {
+      font-family: var(--font-heading);
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      direction: ltr;
+      display: block;
+      margin-top: 2px;
+    }
+    .pri-desc {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      direction: ltr;
+      display: block;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ---- FUTURE LIST CARDS (muted) ---- */
+    .future-card {
+      background: rgba(255,250,238,0.5);
+      border: 1px dashed rgba(196,146,42,0.2);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      direction: rtl;
+      opacity: 0.65;
+    }
+    .future-icon {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-md);
+      background: rgba(196,146,42,0.06);
+      border: 1px solid rgba(196,146,42,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      filter: grayscale(0.5);
+    }
+    .future-text { flex: 1; }
+    .future-name-ar {
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+    .future-lock {
+      font-size: 12px;
+      color: var(--color-gold-600);
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
+
+    /* ---- SLOTS ROW ---- */
+    .slots-row {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-4) var(--space-5);
+      direction: ltr;
+    }
+    .slot {
+      flex: 1;
+      height: 40px;
+      border-radius: var(--radius-md);
+      border: 1.5px dashed rgba(196,146,42,0.3);
+      background: rgba(196,146,42,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-gold-600);
+      transition: all var(--transition-base);
+      position: relative;
+      overflow: hidden;
+    }
+    .slot.filled {
+      border-style: solid;
+      border-color: var(--color-gold-500);
+      background: rgba(196,146,42,0.08);
+    }
+    .slot-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+    }
+    .slot-name {
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      color: var(--color-gold-700);
+      direction: rtl;
+      text-align: center;
+      padding: 0 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    /* ---- TOAST ---- */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: linear-gradient(135deg, var(--color-gold-900), var(--color-gold-800));
+      border: 1px solid var(--color-gold-600);
+      border-radius: var(--radius-full);
+      padding: var(--space-2) var(--space-5);
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--color-gold-200);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 200;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ---- CONTINUE BAR ---- */
+    .continue-bar {
+      position: sticky;
+      bottom: 0;
+      padding: var(--space-4) var(--space-5);
+      background: linear-gradient(to top, var(--bg-page) 70%, transparent);
+      z-index: 40;
+      flex-shrink: 0;
+    }
+    .continue-btn {
+      display: block; width: 100%;
+      padding: 13px var(--space-6);
+      font-family: var(--font-heading);
+      font-size: var(--text-xs);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-align: center;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-600));
+      color: var(--color-gold-100);
+      box-shadow: 0 2px 16px rgba(196,146,42,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+      position: relative; overflow: hidden;
+    }
+    .continue-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.08);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+    .continue-btn:hover::before { opacity: 1; }
+    .continue-btn:active { transform: scale(0.98); }
+    .continue-btn.disabled {
+      background: rgba(92,61,26,0.2);
+      color: var(--color-ink-300);
+      box-shadow: none;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* empty state if no habits selected */
+    .empty-notice {
+      text-align: center;
+      padding: var(--space-16) var(--space-8);
+      direction: ltr;
+    }
+    .empty-notice p {
+      font-family: var(--font-body);
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: var(--text-md);
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="screen">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>▌▌▌</span>
+        <span style="font-size:9px;">WiFi</span>
+        <span style="font-size:9px;">⬛</span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="app-header">
+      <a href="../library/index.html" class="app-header-icon" style="text-decoration:none; font-size:var(--text-lg);">‹</a>
+      <div style="flex:1; text-align:center;">
+        <div class="app-header-title" style="font-size:var(--text-xl);">ورق</div>
+        <span class="app-header-title-latin">Prioritize</span>
+      </div>
+      <div style="width:36px;"></div>
+    </div>
+
+    <!-- Scroll area -->
+    <div class="scroll-area">
+      <div style="display:flex; flex-direction:column;">
+
+        <!-- Heading block -->
+        <div style="padding: var(--space-5) var(--space-5) 0; text-align:center;">
+          <h1 style="
+            font-family: var(--font-heading);
+            font-size: var(--text-xl);
+            letter-spacing: 0.08em;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+            direction: ltr;
+          ">Pick 3 to Start</h1>
+          <p style="
+            font-family: var(--font-body);
+            font-style: italic;
+            font-size: var(--text-md);
+            color: var(--text-secondary);
+            line-height: var(--leading-relaxed);
+            direction: ltr;
+            max-width: 300px;
+            margin: 0 auto;
+          ">Your other habits stay safe in your wishlist. We'll get to them when you're ready.</p>
+        </div>
+
+        <!-- 3 slots indicator -->
+        <div class="slots-row" id="slots-row">
+          <div class="slot" id="slot-1"><span class="slot-label">1st</span></div>
+          <div class="slot" id="slot-2"><span class="slot-label">2nd</span></div>
+          <div class="slot" id="slot-3"><span class="slot-label">3rd</span></div>
+        </div>
+
+        <!-- Tip callout -->
+        <div style="padding: 0 var(--space-5) var(--space-4);">
+          <div class="ds-alert ds-alert-warning" style="direction:ltr;">
+            <div class="ds-alert-icon"><i class="fa-solid fa-lightbulb"></i></div>
+            <div>
+              <div class="ds-alert-title">Tip</div>
+              <div class="ds-alert-text">Choose what your heart feels heaviest about. Strengthen the obligatory before the voluntary.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ornament -->
+        <div style="padding: 0 var(--space-5) var(--space-3);">
+          <div class="orn-divider">
+            <div class="orn-divider-line"></div>
+            <span class="orn-divider-diamond"></span>
+            <span class="orn-divider-star">✦</span>
+            <span class="orn-divider-diamond"></span>
+            <div class="orn-divider-line"></div>
+          </div>
+        </div>
+
+        <!-- Section label -->
+        <div class="section-label">
+          <div class="section-label-text">Your Habits</div>
+          <div class="section-label-line"></div>
+        </div>
+
+        <!-- Selectable habit list -->
+        <div id="habit-list" style="padding: 0 var(--space-4); display:flex; flex-direction:column; gap:var(--space-3);">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Empty notice (shown when no habits in localStorage) -->
+        <div class="empty-notice" id="empty-notice" style="display:none;">
+          <p>No habits selected yet.<br>Go back and choose some first.</p>
+          <a href="../library/index.html" class="btn btn-secondary" style="display:block; margin-top: var(--space-5); text-align:center; text-decoration:none; direction:ltr;">← Back to Library</a>
+        </div>
+
+        <!-- Future / Wishlist section -->
+        <div id="future-section" style="display:none;">
+          <div style="padding: var(--space-5) var(--space-5) var(--space-2);">
+            <div class="orn-double-line"><span></span><span></span></div>
+          </div>
+
+          <div class="section-label">
+            <div class="section-label-text">Your Future List</div>
+            <div class="section-label-line"></div>
+          </div>
+
+          <div id="future-list" style="padding: 0 var(--space-4) var(--space-4); display:flex; flex-direction:column; gap:var(--space-2);">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Spacer for sticky button -->
+        <div style="height: 88px;"></div>
+
+      </div><!-- end inner -->
+    </div><!-- end scroll-area -->
+
+    <!-- Sticky continue button (outside scroll for true stickiness) -->
+    <div class="continue-bar">
+      <button class="continue-btn disabled" id="continue-btn" onclick="goNext()">
+        Continue — <span id="chosen-count">0</span> / 3 chosen
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">Only 3 for now — remove one first ✦</div>
+
+<script>
+/* =========================================================
+   DATA & STATE
+========================================================= */
+const ICONS = {
+  '1':'<i class="fa-solid fa-mosque"></i>',
+  '2':'<i class="fa-solid fa-star"></i>',
+  '3':'<i class="fa-solid fa-book-open"></i>',
+  '4':'<i class="fa-solid fa-sun"></i>',
+  '5':'<i class="fa-solid fa-moon"></i>',
+  '6':'<i class="fa-solid fa-cloud-sun"></i>',
+  '7':'<i class="fa-solid fa-calendar-days"></i>',
+  '8':'<i class="fa-solid fa-circle-half-stroke"></i>',
+  '9':'<i class="fa-solid fa-hands-praying"></i>',
+  '10':'<i class="fa-solid fa-sparkles"></i>',
+  '11':'<i class="fa-solid fa-heart"></i>',
+  '12':'<i class="fa-solid fa-magnifying-glass"></i>',
+  '13':'<i class="fa-solid fa-users"></i>',
+  '14':'<i class="fa-solid fa-scroll"></i>',
+  '15':'<i class="fa-solid fa-hand-holding-heart"></i>'
+};
+
+let allHabits   = [];  /* habits user selected in library */
+let prioritized = [];  /* max 3, in selection order */
+let toastTimer  = null;
+
+/* =========================================================
+   INIT
+========================================================= */
+(function init() {
+  const stored = localStorage.getItem('waraq_selected_habits');
+  if (!stored) {
+    document.getElementById('empty-notice').style.display = 'block';
+    document.getElementById('habit-list').style.display   = 'none';
+    return;
+  }
+
+  allHabits = JSON.parse(stored);
+
+  if (allHabits.length === 0) {
+    document.getElementById('empty-notice').style.display = 'block';
+    document.getElementById('habit-list').style.display   = 'none';
+    return;
+  }
+
+  renderHabits();
+  renderFuture([]);  /* initially all go to wishlist view - will update dynamically */
+  updateUI();
+})();
+
+/* =========================================================
+   RENDER SELECTABLE CARDS
+========================================================= */
+function renderHabits() {
+  const list = document.getElementById('habit-list');
+  list.innerHTML = '';
+
+  allHabits.forEach(function(h) {
+    const card = document.createElement('div');
+    card.className = 'pri-card';
+    card.dataset.id = h.id;
+    card.onclick = function() { toggleHabit(h); };
+
+    card.innerHTML =
+      '<div class="pri-badge" id="badge-' + h.id + '"></div>' +
+      '<div class="pri-icon">' + (ICONS[h.id] || '⭐') + '</div>' +
+      '<div class="pri-text">' +
+        '<div class="pri-name-ar">' + h.nameAr + '</div>' +
+        '<span class="pri-name-en">' + h.nameEn + '</span>' +
+        '<span class="pri-desc">' + (h.desc || '') + '</span>' +
+      '</div>';
+
+    list.appendChild(card);
+  });
+}
+
+/* =========================================================
+   TOGGLE PRIORITY
+========================================================= */
+function toggleHabit(h) {
+  const idx = prioritized.findIndex(function(p) { return p.id === h.id; });
+
+  if (idx !== -1) {
+    /* Remove it — shift down higher-priority numbers */
+    prioritized.splice(idx, 1);
+  } else {
+    if (prioritized.length >= 3) {
+      showToast();
+      return;
+    }
+    prioritized.push(h);
+  }
+
+  updateUI();
+}
+
+/* =========================================================
+   UPDATE ALL UI
+========================================================= */
+function updateUI() {
+  const chosenIds = prioritized.map(function(p) { return p.id; });
+
+  /* Update each card */
+  allHabits.forEach(function(h) {
+    const card  = document.querySelector('[data-id="' + h.id + '"]');
+    const badge = document.getElementById('badge-' + h.id);
+    if (!card) return;
+
+    const rank = prioritized.findIndex(function(p) { return p.id === h.id; });
+    if (rank !== -1) {
+      card.classList.add('chosen');
+      badge.textContent = rank + 1;
+    } else {
+      card.classList.remove('chosen');
+      badge.textContent = '';
+    }
+  });
+
+  /* Update slots */
+  for (var s = 1; s <= 3; s++) {
+    const slot = document.getElementById('slot-' + s);
+    const habit = prioritized[s - 1];
+    if (habit) {
+      slot.classList.add('filled');
+      slot.innerHTML = '<span class="slot-name">' + habit.nameAr + '</span>';
+    } else {
+      slot.classList.remove('filled');
+      slot.innerHTML = '<span class="slot-label">' + s + (s===1?'st':s===2?'nd':'rd') + '</span>';
+    }
+  }
+
+  /* Future wishlist */
+  const unselected = allHabits.filter(function(h) {
+    return !chosenIds.includes(h.id);
+  });
+  renderFuture(unselected);
+
+  /* Counter & continue */
+  const count = prioritized.length;
+  const btn = document.getElementById('continue-btn');
+  if (count === 3) {
+    btn.classList.remove('disabled');
+    btn.innerHTML = 'Continue — Start with these 3 ✦';
+  } else {
+    btn.classList.add('disabled');
+    btn.innerHTML = 'Continue — <span id="chosen-count">' + count + '</span> / 3 chosen';
+  }
+}
+
+/* =========================================================
+   FUTURE WISHLIST SECTION
+========================================================= */
+function renderFuture(habits) {
+  const section = document.getElementById('future-section');
+  const list    = document.getElementById('future-list');
+
+  if (habits.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  list.innerHTML = '';
+
+  habits.forEach(function(h) {
+    const card = document.createElement('div');
+    card.className = 'future-card';
+    card.innerHTML =
+      '<div class="future-icon">' + (ICONS[h.id] || '⭐') + '</div>' +
+      '<div class="future-text">' +
+        '<div class="future-name-ar">' + h.nameAr + '</div>' +
+      '</div>' +
+      '<div class="future-lock"><i class="fa-solid fa-lock"></i></div>';
+    list.appendChild(card);
+  });
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+function showToast() {
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() {
+    toast.classList.remove('show');
+  }, 2400);
+}
+
+/* =========================================================
+   CONTINUE
+========================================================= */
+function goNext() {
+  if (prioritized.length !== 3) return;
+
+  /* Save prioritized habits with their rank */
+  const ranked = prioritized.map(function(h, i) {
+    return Object.assign({}, h, { priority: i + 1 });
+  });
+  localStorage.setItem('waraq_prioritized', JSON.stringify(ranked));
+
+  waraqGo('../setup/tiers.html');
+}
+</script>
+
+<script src="../../js/router.js"></script>
+</body>
+</html>

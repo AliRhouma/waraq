@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — اليوم</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { padding: 0; }
+    .fa-solid { line-height: 1; }
+
+    .home-status-band {
+      background: linear-gradient(135deg, var(--color-gold-900) 0%, var(--color-gold-800) 100%);
+      border-bottom: 1px solid var(--color-gold-600);
+      padding: var(--space-2) var(--space-5) var(--space-3);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0; gap: var(--space-3); direction: ltr;
+    }
+    .band-date { flex: 1; }
+    .band-hijri { font-family: var(--font-display); font-size: var(--text-md); color: var(--color-gold-200); line-height: 1.2; direction: rtl; }
+    .band-gregorian { font-family: var(--font-heading); font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-gold-500); direction: ltr; margin-top: 2px; }
+    .band-prayer { display: flex; align-items: center; gap: var(--space-3); }
+    .band-prayer-info { text-align: right; }
+    .band-prayer-name { font-family: var(--font-heading); font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-gold-400); }
+    .band-prayer-countdown { font-family: var(--font-heading); font-size: 0.72rem; letter-spacing: 0.06em; color: var(--color-gold-200); font-weight: 600; }
+    .band-qibla { width: 30px; height: 30px; border: 1px solid var(--color-gold-600); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(196,146,42,0.08); flex-shrink: 0; font-size: 13px; color: var(--color-gold-400); position: relative; }
+    .band-qibla::before { content: ''; position: absolute; inset: 3px; border-radius: 50%; border: 1px solid rgba(196,146,42,0.25); }
+
+    .home-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 72px; }
+    .home-scroll::-webkit-scrollbar { display: none; }
+
+    .greeting-block { padding: var(--space-5) var(--space-5) var(--space-4); direction: rtl; }
+    .greeting-arabic { font-family: var(--font-display); font-size: var(--text-2xl); color: var(--text-primary); line-height: 1.3; }
+    .greeting-sub { font-family: var(--font-body); font-style: italic; font-size: var(--text-md); color: var(--text-secondary); direction: ltr; margin-top: 2px; }
+    .greeting-sub span { color: var(--color-gold-600); font-weight: 600; }
+
+    .prayers-section { padding: 0 var(--space-4) var(--space-4); }
+    .prayers-row { display: flex; gap: var(--space-2); direction: ltr; }
+    .prayer-tile { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); cursor: pointer; user-select: none; padding: var(--space-2) 0; }
+    .prayer-circle { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(196,146,42,0.35); background: rgba(196,146,42,0.04); display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all var(--transition-base); position: relative; color: var(--color-gold-500); }
+    .prayer-tile:hover .prayer-circle { border-color: rgba(196,146,42,0.6); background: rgba(196,146,42,0.08); }
+    .prayer-tile.prayed .prayer-circle { background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-600)); border-color: var(--color-gold-500); box-shadow: 0 0 12px rgba(196,146,42,0.4); color: var(--color-gold-100); }
+    .prayer-tile.jamaah .prayer-circle { background: linear-gradient(135deg, var(--color-gold-600), var(--color-gold-500)); border-color: var(--color-gold-400); box-shadow: 0 0 16px rgba(196,146,42,0.55), 0 0 0 3px rgba(196,146,42,0.15); color: var(--color-gold-100); }
+    .prayer-tile.current .prayer-circle::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1px dashed rgba(196,146,42,0.4); animation: spin 8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .prayer-name-label { font-family: var(--font-heading); font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); transition: color var(--transition-fast); }
+    .prayer-tile.prayed .prayer-name-label, .prayer-tile.jamaah .prayer-name-label { color: var(--color-gold-500); }
+    .prayer-state-icon { font-size: 13px; line-height: 1; }
+
+    .home-section-head { display: flex; align-items: center; padding: var(--space-3) var(--space-5) var(--space-3); gap: var(--space-3); direction: ltr; }
+    .home-section-title { font-family: var(--font-heading); font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-gold-500); white-space: nowrap; flex-shrink: 0; }
+    .home-section-line { flex: 1; height: 1px; background: linear-gradient(to right, rgba(196,146,42,0.3), transparent); }
+
+    .habit-rows { padding: 0 var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+    .habit-row { background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: var(--radius-md); padding: var(--space-4); display: flex; align-items: center; gap: var(--space-3); cursor: pointer; transition: all var(--transition-base); text-decoration: none; color: inherit; position: relative; overflow: hidden; direction: rtl; }
+    .habit-row:hover { border-color: rgba(196,146,42,0.5); box-shadow: var(--shadow-soft); transform: translateY(-1px); }
+    .habit-row.done { border-color: var(--color-gold-500); background: rgba(196,146,42,0.04); }
+    .habit-row.done::after { content: ''; position: absolute; top: 0; right: 0; width: 3px; height: 100%; background: var(--color-gold-500); }
+    .habit-row-icon { width: 40px; height: 40px; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--color-gold-900), var(--color-gold-800)); border: 1px solid var(--color-gold-700); display: flex; align-items: center; justify-content: center; font-size: 17px; color: var(--color-gold-300); flex-shrink: 0; transition: all var(--transition-base); }
+    .habit-row.done .habit-row-icon { border-color: var(--color-gold-500); box-shadow: 0 0 10px rgba(196,146,42,0.3); }
+    .habit-row-text { flex: 1; min-width: 0; }
+    .habit-row-name-ar { font-family: var(--font-display); font-size: var(--text-md); color: var(--text-primary); line-height: 1.3; transition: color var(--transition-base); }
+    .habit-row.done .habit-row-name-ar { text-decoration: line-through; text-decoration-color: rgba(196,146,42,0.4); color: var(--text-muted); }
+    .habit-row-meta { display: flex; align-items: center; gap: var(--space-2); margin-top: 2px; direction: ltr; flex-wrap: wrap; }
+    .habit-tier-badge { font-family: var(--font-heading); font-size: 0.48rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 2px 7px; border-radius: var(--radius-full); background: rgba(196,146,42,0.1); border: 1px solid rgba(196,146,42,0.3); color: var(--color-gold-500); }
+    .habit-anchor-label { font-family: var(--font-body); font-style: italic; font-size: var(--text-xs); color: var(--text-muted); }
+    .habit-check { width: 36px; height: 36px; border-radius: 50%; border: 2px solid rgba(196,146,42,0.4); background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; transition: all var(--transition-base); position: relative; z-index: 2; }
+    .habit-check:hover { border-color: var(--color-gold-500); background: rgba(196,146,42,0.06); }
+    .habit-check .check-inner { opacity: 0; transform: scale(0.5); transition: all var(--transition-base); font-size: 13px; color: var(--color-gold-100); }
+    .habit-row.done .habit-check { background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-600)); border-color: var(--color-gold-500); box-shadow: 0 0 14px rgba(196,146,42,0.45); }
+    .habit-row.done .habit-check .check-inner { opacity: 1; transform: scale(1); }
+
+    @keyframes sparkle-burst { 0% { transform: scale(0); opacity: 1; } 60% { transform: scale(1.6); opacity: 0.7; } 100% { transform: scale(2.2); opacity: 0; } }
+    .sparkle-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--color-gold-400); pointer-events: none; opacity: 0; }
+    .sparkle-ring.burst { animation: sparkle-burst 0.5s ease-out forwards; }
+    @keyframes gold-pulse { 0% { box-shadow: 0 0 0 0 rgba(196,146,42,0.6); } 70% { box-shadow: 0 0 0 14px rgba(196,146,42,0); } 100% { box-shadow: 0 0 0 0 rgba(196,146,42,0); } }
+    .habit-row.pulse-once { animation: gold-pulse 0.5s ease-out; }
+
+    .consistency-block { padding: var(--space-1) var(--space-5) var(--space-4); }
+    .consistency-bar { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); }
+    .consistency-label { font-family: var(--font-body); font-style: italic; font-size: var(--text-sm); color: var(--text-secondary); direction: ltr; text-align: center; margin-bottom: var(--space-3); }
+    .consistency-label strong { font-style: normal; color: var(--color-gold-600); font-weight: 600; }
+    .dots-row { display: flex; align-items: center; justify-content: center; gap: var(--space-2); direction: ltr; }
+    .day-dot-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .day-dot { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid rgba(196,146,42,0.25); background: rgba(196,146,42,0.04); transition: all var(--transition-base); }
+    .day-dot.filled { background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-500)); border-color: var(--color-gold-400); box-shadow: 0 0 8px rgba(196,146,42,0.4); }
+    .day-dot.today { border-color: var(--color-gold-400); border-style: dashed; }
+    .day-label { font-family: var(--font-heading); font-size: 0.42rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+    .day-label.today-lbl { color: var(--color-gold-500); }
+
+    .bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; height: 68px; background: linear-gradient(to top, var(--color-gold-900), var(--color-gold-800)); border-top: 1px solid var(--color-gold-600); display: flex; align-items: center; justify-content: space-around; padding: 0 var(--space-2); flex-shrink: 0; z-index: 50; direction: ltr; }
+    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: var(--space-2) 0; cursor: pointer; text-decoration: none; transition: all var(--transition-fast); opacity: 0.55; }
+    .nav-item.active { opacity: 1; }
+    .nav-item:hover { opacity: 0.8; }
+    .nav-icon { font-size: 18px; line-height: 1; color: var(--color-gold-300); transition: transform var(--transition-fast); }
+    .nav-item.active .nav-icon { transform: scale(1.12); color: var(--color-gold-200); }
+    .nav-label { font-family: var(--font-heading); font-size: 0.45rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-gold-400); }
+    .nav-item.active .nav-label { color: var(--color-gold-200); }
+    .nav-active-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--color-gold-400); margin-top: 1px; display: none; }
+    .nav-item.active .nav-active-dot { display: block; }
+  </style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="screen" style="position:relative;">
+
+    <div class="home-status-band">
+      <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);font-family:var(--font-heading);font-size:0.5rem;letter-spacing:0.2em;color:var(--color-gold-600);">9:41</div>
+      <div class="band-date">
+        <div class="band-hijri" id="hijri-date">١٥ رمضان ١٤٤٦</div>
+        <div class="band-gregorian" id="gregorian-date">Saturday, 14 Mar 2026</div>
+      </div>
+      <div class="band-prayer">
+        <div class="band-prayer-info">
+          <div class="band-prayer-name" id="next-prayer-name">Asr</div>
+          <div class="band-prayer-countdown" id="next-prayer-countdown">in 1h 24m</div>
+        </div>
+        <div class="band-qibla" title="Qibla direction">
+          <i class="fa-solid fa-compass"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-scroll">
+
+      <div class="greeting-block fade-up">
+        <div class="greeting-arabic">السلام عليكم</div>
+        <div class="greeting-sub" id="greeting-sub">Good afternoon, <span>beloved</span></div>
+      </div>
+
+      <div class="prayers-section fade-up-1">
+        <div class="home-section-head" style="padding-top:0;padding-bottom:var(--space-3);">
+          <div class="home-section-title">Today's Prayers</div>
+          <div class="home-section-line"></div>
+        </div>
+        <div class="prayers-row" id="prayers-row"></div>
+      </div>
+
+      <div style="padding: var(--space-2) var(--space-5) var(--space-3);">
+        <div class="orn-divider">
+          <div class="orn-divider-line"></div>
+          <span class="orn-divider-diamond"></span>
+          <span class="orn-divider-star">✦</span>
+          <span class="orn-divider-diamond"></span>
+          <div class="orn-divider-line"></div>
+        </div>
+      </div>
+
+      <!-- Weekly Check-In Banner -->
+      <div style="padding: 0 var(--space-4) var(--space-3);" class="fade-up-2">
+        <a href="../checkin/index.html" style="
+          display:flex; align-items:center; justify-content:space-between;
+          background:linear-gradient(135deg,rgba(42,28,4,0.7),rgba(61,43,14,0.5));
+          border:1.5px solid var(--color-gold-600); border-radius:var(--radius-md);
+          padding:var(--space-3) var(--space-4); text-decoration:none;
+          position:relative; overflow:hidden; gap:var(--space-3);
+          box-shadow:0 0 20px rgba(196,146,42,0.12);
+        ">
+          <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--color-gold-400),transparent);"></div>
+          <div>
+            <div style="font-family:var(--font-heading);font-size:0.5rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--color-gold-400);direction:ltr;">Week 1 Review</div>
+            <div style="font-family:var(--font-body);font-style:italic;font-size:var(--text-sm);color:var(--color-gold-200);direction:ltr;margin-top:2px;">Your week 1 review is ready ✦</div>
+          </div>
+          <div style="
+            padding:6px 14px; border-radius:var(--radius-full);
+            background:rgba(196,146,42,0.18); border:1px solid var(--color-gold-500);
+            font-family:var(--font-heading); font-size:0.5rem;
+            letter-spacing:0.18em; text-transform:uppercase; color:var(--color-gold-200);
+            flex-shrink:0; white-space:nowrap;
+          ">Reflect Now</div>
+        </a>
+      </div>
+
+      <div class="home-section-head fade-up-2">
+        <div class="home-section-title">Your 3 Habits Today</div>
+        <div class="home-section-line"></div>
+      </div>
+      <div class="habit-rows fade-up-2" id="habit-rows"></div>
+
+      <div class="home-section-head fade-up-3" style="margin-top:var(--space-5);">
+        <div class="home-section-title">This Week</div>
+        <div class="home-section-line"></div>
+      </div>
+      <div class="consistency-block fade-up-3">
+        <div class="consistency-bar">
+          <div class="consistency-label" id="consistency-label"><strong>5 of 7</strong> days strong</div>
+          <div class="dots-row" id="dots-row"></div>
+        </div>
+      </div>
+
+      <div style="padding: var(--space-4) var(--space-5) var(--space-3);">
+        <div class="orn-double-line"><span></span><span></span></div>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="index.html" class="nav-item active">
+        <span class="nav-icon"><i class="fa-solid fa-house"></i></span>
+        <span class="nav-label">Home</span>
+        <span class="nav-active-dot"></span>
+      </a>
+      <a href="../library/index.html" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-book-open"></i></span>
+        <span class="nav-label">Library</span>
+        <span class="nav-active-dot"></span>
+      </a>
+      <a href="../insights/index.html" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-chart-simple"></i></span>
+        <span class="nav-label">Insights</span>
+        <span class="nav-active-dot"></span>
+      </a>
+      <a href="../settings/index.html" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+        <span class="nav-label">Settings</span>
+        <span class="nav-active-dot"></span>
+      </a>
+    </nav>
+  </div>
+</div>
+
+<script>
+const PRAYERS = [
+  { id:'fajr',    name:'Fajr',    icon:'<i class="fa-solid fa-sun"></i>' },
+  { id:'dhuhr',   name:'Dhuhr',   icon:'<i class="fa-solid fa-sun"></i>' },
+  { id:'asr',     name:'Asr',     icon:'<i class="fa-solid fa-cloud-sun"></i>' },
+  { id:'maghrib', name:'Maghrib', icon:'<i class="fa-solid fa-moon"></i>' },
+  { id:'isha',    name:'Isha',    icon:'<i class="fa-solid fa-star-and-crescent"></i>' },
+];
+const STATES = ['none','prayed','jamaah'];
+const prayerStates = { fajr:'prayed', dhuhr:'prayed', asr:'none', maghrib:'none', isha:'none' };
+const habitDone = {};
+const ICONS = {
+  '1':'<i class="fa-solid fa-mosque"></i>',
+  '2':'<i class="fa-solid fa-star"></i>',
+  '3':'<i class="fa-solid fa-book-open"></i>',
+  '4':'<i class="fa-solid fa-sun"></i>',
+  '5':'<i class="fa-solid fa-moon"></i>',
+  '6':'<i class="fa-solid fa-sun"></i>',
+  '7':'<i class="fa-solid fa-calendar-days"></i>',
+  '8':'<i class="fa-solid fa-moon"></i>',
+  '9':'<i class="fa-solid fa-hands-praying"></i>',
+  '10':'<i class="fa-solid fa-sparkles"></i>',
+  '11':'<i class="fa-solid fa-heart"></i>',
+  '12':'<i class="fa-solid fa-magnifying-glass"></i>',
+  '13':'<i class="fa-solid fa-users"></i>',
+  '14':'<i class="fa-solid fa-scroll"></i>',
+  '15':'<i class="fa-solid fa-hand-holding-heart"></i>'
+};
+const WEEK_DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const WEEK_DONE = [true,true,false,true,true,true,false];
+
+(function setupDate() {
+  const now = new Date();
+  const hour = now.getHours();
+  const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const sub = document.getElementById('greeting-sub');
+  if (sub) sub.innerHTML = greet + ', <span style="color:var(--color-gold-600);font-weight:600;">beloved</span>';
+  const gEl = document.getElementById('gregorian-date');
+  if (gEl) gEl.textContent = now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short',year:'numeric'});
+})();
+
+(function setupPrayer() {
+  const today = new Date();
+  const y = today.getFullYear(), mo = today.getMonth(), d = today.getDate();
+  const times = [
+    {id:'fajr',name:'Fajr',h:5,m:15},{id:'dhuhr',name:'Dhuhr',h:12,m:30},
+    {id:'asr',name:'Asr',h:15,m:45},{id:'maghrib',name:'Maghrib',h:18,m:20},
+    {id:'isha',name:'Isha',h:19,m:45}
+  ];
+  const nowMs = Date.now();
+  let next = null;
+  for (var i=0;i<times.length;i++) {
+    const t = new Date(y,mo,d,times[i].h,times[i].m);
+    if (t.getTime()>nowMs){next={...times[i],date:t};break;}
+  }
+  if (!next) next={name:'Fajr',date:new Date(y,mo,d+1,5,15)};
+  function tick(){
+    const diff=Math.max(0,next.date.getTime()-Date.now());
+    const hh=Math.floor(diff/3600000);
+    const mm=Math.floor((diff%3600000)/60000);
+    const el=document.getElementById('next-prayer-countdown');
+    if(el) el.textContent='in '+(hh>0?hh+'h ':'')+mm+'m';
+  }
+  document.getElementById('next-prayer-name').textContent=next.name;
+  tick(); setInterval(tick,30000);
+})();
+
+(function buildPrayers(){
+  const row=document.getElementById('prayers-row');
+  PRAYERS.forEach(function(p){
+    const tile=document.createElement('div');
+    tile.className='prayer-tile';
+    tile.id='pt-'+p.id;
+    const st=prayerStates[p.id]||'none';
+    if(st!=='none') tile.classList.add(st);
+    if(p.id==='asr') tile.classList.add('current');
+    tile.innerHTML=
+      '<div class="prayer-circle">'+
+        '<span class="prayer-state-icon" id="pi-'+p.id+'">'+(st==='prayed'?'✓':st==='jamaah'?'★':p.icon)+'</span>'+
+      '</div>'+
+      '<span class="prayer-name-label">'+p.name+'</span>';
+    tile.onclick=function(){cyclePrayer(p.id,p.icon);};
+    row.appendChild(tile);
+  });
+})();
+
+function cyclePrayer(prayerId,icon){
+  const cur=prayerStates[prayerId]||'none';
+  const idx=STATES.indexOf(cur);
+  const next=STATES[(idx+1)%STATES.length];
+  prayerStates[prayerId]=next;
+  const tile=document.getElementById('pt-'+prayerId);
+  const iconEl=document.getElementById('pi-'+prayerId);
+  STATES.forEach(function(s){tile.classList.remove(s);});
+  if(next!=='none') tile.classList.add(next);
+  if(next==='none')   iconEl.innerHTML=icon;
+  if(next==='prayed') iconEl.innerHTML='✓';
+  if(next==='jamaah') iconEl.innerHTML='★';
+}
+
+(function buildHabits(){
+  const container=document.getElementById('habit-rows');
+  const src=localStorage.getItem('waraq_final_habits')||localStorage.getItem('waraq_with_tiers')||localStorage.getItem('waraq_prioritized');
+  let habits=src?JSON.parse(src):null;
+  if(!habits||habits.length===0){
+    habits=[
+      {id:'3',nameAr:'قراءة القرآن',nameEn:'Quran Reading',tierLabel:'1 ayah / day',anchor:'fajr',anchorLabel:'After Fajr',anchorEmoji:'',priority:1},
+      {id:'5',nameAr:'صلاة التهجد',nameEn:'Tahajjud',tierLabel:'2 rakaat once/week',anchor:'sleep',anchorLabel:'Before Sleep',anchorEmoji:'',priority:2},
+      {id:'7',nameAr:'أذكار الصباح',nameEn:'Morning Adhkar',tierLabel:'1 dhikr',anchor:'fajr',anchorLabel:'After Fajr',anchorEmoji:'',priority:3},
+    ];
+  }
+  habits.forEach(function(h,i){
+    const icon=ICONS[h.id]||'<i class="fa-solid fa-star"></i>';
+    const link=document.createElement('a');
+    link.href='../habit-detail/index.html';
+    link.className='habit-row fade-up-'+(i+2);
+    link.id='hr-'+h.id;
+    link.style.animationDelay=(i*0.08)+'s';
+    const tierText=h.tierLabel?(h.tierLabel):(h.selectedTier?'Tier '+h.selectedTier:'');
+    const anchTxt=h.anchorLabel?h.anchorLabel:'';
+    const metaHtml=
+      (tierText?'<span class="habit-tier-badge">T'+(h.selectedTier||h.priority||1)+' · '+tierText+'</span>':'')+
+      (anchTxt?'<span class="habit-anchor-label">'+anchTxt+'</span>':'');
+    link.innerHTML=
+      '<div class="habit-row-icon">'+icon+'</div>'+
+      '<div class="habit-row-text">'+
+        '<div class="habit-row-name-ar">'+h.nameAr+'</div>'+
+        '<div class="habit-row-meta">'+metaHtml+'</div>'+
+      '</div>'+
+      '<div class="habit-check" id="hc-'+h.id+'" data-hid="'+h.id+'">'+
+        '<div class="sparkle-ring" id="sr-'+h.id+'"></div>'+
+        '<span class="check-inner"><i class="fa-solid fa-check"></i></span>'+
+      '</div>';
+    container.appendChild(link);
+    link.querySelector('#hc-'+h.id).addEventListener('click',function(e){
+      e.preventDefault();e.stopPropagation();toggleHabit(h.id,link);
+    });
+  });
+})();
+
+function toggleHabit(habitId,rowEl){
+  const isDone=rowEl.classList.toggle('done');
+  habitDone[habitId]=isDone;
+  if(isDone){
+    const ring=document.getElementById('sr-'+habitId);
+    if(ring){ring.classList.remove('burst');void ring.offsetWidth;ring.classList.add('burst');setTimeout(function(){ring.classList.remove('burst');},600);}
+    rowEl.classList.remove('pulse-once');void rowEl.offsetWidth;rowEl.classList.add('pulse-once');
+    setTimeout(function(){rowEl.classList.remove('pulse-once');},600);
+  }
+}
+
+(function buildWeek(){
+  const row=document.getElementById('dots-row');
+  const today=new Date();
+  let filled=0;
+  WEEK_DONE.forEach(function(d){if(d)filled++;});
+  document.getElementById('consistency-label').innerHTML='<strong>'+filled+' of 7</strong> days strong';
+  for(var i=0;i<7;i++){
+    const dayOffset=i-6;
+    const dayDate=new Date(today);
+    dayDate.setDate(today.getDate()+dayOffset);
+    const isToday=(i===6);
+    const wrap=document.createElement('div');
+    wrap.className='day-dot-wrap';
+    const dot=document.createElement('div');
+    dot.className='day-dot';
+    if(WEEK_DONE[i]) dot.classList.add('filled');
+    if(isToday) dot.classList.add('today');
+    const lbl=document.createElement('span');
+    lbl.className='day-label'+(isToday?' today-lbl':'');
+    lbl.textContent=WEEK_DAYS[dayDate.getDay()];
+    wrap.appendChild(dot);wrap.appendChild(lbl);row.appendChild(wrap);
+  }
+})();
+</script>
+<script src="../../js/router.js"></script>
+</body>
+</html>

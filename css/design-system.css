@@ -1,0 +1,299 @@
+/* =============================================
+   WARAQ DESIGN SYSTEM — MASTER CSS
+   Single source of truth for all design tokens.
+   Do NOT add colors, fonts, or spacing here that
+   are not already defined as CSS custom properties.
+============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Scheherazade+New:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Cinzel:wght@400;600;700&display=swap');
+
+/* Prevent white flash during MPA fallback navigations */
+html, body { background: #1A0F00; }
+
+:root {
+  /* --- COLOR TOKENS --- */
+  --color-gold-900:   #2A1C04;
+  --color-gold-800:   #3D2B0E;
+  --color-gold-700:   #6B4C1E;
+  --color-gold-600:   #8B6914;
+  --color-gold-500:   #C4922A;
+  --color-gold-400:   #D4A84B;
+  --color-gold-300:   #E8C96A;
+  --color-gold-200:   #F0DFA0;
+  --color-gold-100:   #F5E4A8;
+  --color-gold-50:    #FAF3E0;
+
+  --color-parchment-dark:  #EDD9A3;
+  --color-parchment-base:  #F0E0BB;
+  --color-parchment-light: #FAF3E0;
+  --color-parchment-white: #FFFAEE;
+
+  --color-ink-900:    #0D0800;
+  --color-ink-800:    #1A1000;
+  --color-ink-700:    #2C1A06;
+  --color-ink-600:    #3E2810;
+  --color-ink-500:    #5C3D1A;
+  --color-ink-400:    #7A5530;
+  --color-ink-300:    #A07848;
+  --color-ink-200:    #C4A070;
+  --color-ink-100:    #E0C8A0;
+
+  --color-accent-emerald: #2D5A3D;
+  --color-accent-ruby:    #7A1C1C;
+  --color-accent-lapis:   #1C3A5C;
+  --color-accent-ivory:   #FFFDF5;
+
+  /* --- SEMANTIC ALIASES --- */
+  --bg-page:        var(--color-parchment-light);
+  --bg-card:        var(--color-parchment-white);
+  --bg-header:      var(--color-gold-800);
+  --bg-label:       rgba(196,146,42,0.08);
+  --bg-hover:       rgba(196,146,42,0.10);
+  --bg-stripe:      rgba(232,201,106,0.06);
+
+  --border-primary:  var(--color-gold-500);
+  --border-subtle:   rgba(196,146,42,0.30);
+  --border-strong:   var(--color-gold-700);
+
+  --text-heading:   var(--color-gold-50);
+  --text-primary:   var(--color-ink-700);
+  --text-secondary: var(--color-ink-500);
+  --text-muted:     var(--color-ink-300);
+  --text-accent:    var(--color-gold-600);
+  --text-label:     var(--color-gold-800);
+
+  --shadow-card:    0 0 0 6px rgba(196,146,42,0.12), 0 0 0 8px var(--color-gold-500), 0 20px 60px rgba(61,43,14,0.25);
+  --shadow-soft:    0 4px 24px rgba(61,43,14,0.12);
+  --shadow-inset:   inset 0 0 40px rgba(232,201,106,0.08);
+
+  /* --- TYPOGRAPHY TOKENS --- */
+  --font-display:   'Amiri', serif;
+  --font-arabic:    'Scheherazade New', serif;
+  --font-heading:   'Cinzel', serif;
+  --font-body:      'Cormorant Garamond', serif;
+
+  --text-xs:    0.75rem;
+  --text-sm:    0.875rem;
+  --text-base:  1rem;
+  --text-md:    1.125rem;
+  --text-lg:    1.25rem;
+  --text-xl:    1.5rem;
+  --text-2xl:   1.875rem;
+  --text-3xl:   2.25rem;
+  --text-4xl:   3rem;
+  --text-5xl:   3.75rem;
+
+  --leading-tight:  1.2;
+  --leading-snug:   1.4;
+  --leading-normal: 1.6;
+  --leading-relaxed:1.8;
+  --leading-loose:  2.2;
+
+  /* --- SPACING TOKENS --- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* --- BORDER RADIUS --- */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+
+  /* --- TRANSITIONS --- */
+  --transition-fast:   150ms ease;
+  --transition-base:   250ms ease;
+  --transition-slow:   400ms ease;
+  --transition-enter:  600ms cubic-bezier(0.16,1,0.3,1);
+}
+
+/* =============================================
+   RESET & BASE
+============================================= */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background-color: #1A1000;
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C4922A' fill-opacity='0.04'%3E%3Cpath d='M60 0L120 60L60 120L0 60Z'/%3E%3C/g%3E%3C/svg%3E");
+  min-height: 100vh;
+  line-height: var(--leading-normal);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =============================================
+   PHONE FRAME (desktop wrapper)
+   All screens are rendered within this frame.
+============================================= */
+.phone-frame {
+  width: 100%;
+  max-width: 390px;
+  min-height: 844px;
+  background-color: var(--bg-page);
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C4922A' fill-opacity='0.025'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z'/%3E%3C/g%3E%3C/svg%3E");
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 12px #1A1000,
+    0 0 0 14px var(--color-gold-700),
+    0 40px 80px rgba(0,0,0,0.7);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hide phone frame chrome on actual mobile */
+@media (max-width: 480px) {
+  body {
+    padding: 0;
+    background-color: var(--bg-page);
+    background-image: none;
+  }
+  .phone-frame {
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 100vh;
+    max-width: 100%;
+  }
+}
+
+/* =============================================
+   SCREEN CONTAINER
+   Each HTML page wraps its content in .screen
+============================================= */
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* =============================================
+   ORNAMENTAL UTILITIES
+============================================= */
+.orn-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+.orn-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-gold-400), transparent);
+}
+.orn-divider-diamond {
+  width: 8px;
+  height: 8px;
+  background: var(--color-gold-400);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+.orn-divider-star {
+  font-size: 12px;
+  color: var(--color-gold-400);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Basmalah / Arabic centered ornament */
+.orn-bismillah {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--color-gold-600);
+  direction: rtl;
+  text-align: center;
+}
+
+/* Double-line divider */
+.orn-double-line {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.orn-double-line span {
+  display: block;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-gold-400), transparent);
+}
+.orn-double-line span:nth-child(2) {
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--color-gold-500), transparent);
+}
+
+/* Corner bracket ornament */
+.orn-corner-tl,
+.orn-corner-tr,
+.orn-corner-bl,
+.orn-corner-br {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: var(--color-gold-500);
+  border-style: solid;
+}
+.orn-corner-tl { top: 6px; left: 6px;  border-width: 1.5px 0 0 1.5px; }
+.orn-corner-tr { top: 6px; right: 6px; border-width: 1.5px 1.5px 0 0; }
+.orn-corner-bl { bottom: 6px; left: 6px;  border-width: 0 0 1.5px 1.5px; }
+.orn-corner-br { bottom: 6px; right: 6px; border-width: 0 1.5px 1.5px 0; }
+
+/* =============================================
+   GEOMETRIC PATTERN BACKGROUNDS
+============================================= */
+.geo-bg-diamonds {
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23E8C96A' stroke-opacity='0.08' stroke-width='0.5'%3E%3Cpath d='M20 2L38 20L20 38L2 20Z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.geo-bg-stars {
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C4922A' fill-opacity='0.04'%3E%3Cpath d='M30 5L35 22H53L39 32L44 50L30 40L16 50L21 32L7 22H25Z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+
+/* =============================================
+   FADE-IN ANIMATION
+============================================= */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.5s var(--transition-enter) both; }
+.fade-up-1 { animation: fadeUp 0.5s 0.1s var(--transition-enter) both; }
+.fade-up-2 { animation: fadeUp 0.5s 0.2s var(--transition-enter) both; }
+.fade-up-3 { animation: fadeUp 0.5s 0.3s var(--transition-enter) both; }
+.fade-up-4 { animation: fadeUp 0.5s 0.4s var(--transition-enter) both; }
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}

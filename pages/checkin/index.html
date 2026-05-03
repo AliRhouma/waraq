@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — مراجعة الأسبوع</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { padding: 0; }
+    .fa-solid, .fa-regular { line-height: 1; }
+
+    /* ── PAGE WRAPPER ── */
+    .checkin-screen {
+      min-height: 100%;
+      background: var(--bg-page);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── SCROLL AREA ── */
+    .checkin-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: var(--space-6) var(--space-5) var(--space-8);
+    }
+    .checkin-scroll::-webkit-scrollbar { display: none; }
+
+    /* ── BISMILLAH ── */
+    .bismillah-block {
+      text-align: center;
+      margin-bottom: var(--space-5);
+    }
+    .bismillah-text {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--color-gold-500);
+      line-height: 1.2;
+      text-shadow: 0 0 20px rgba(196,146,42,0.25);
+    }
+    .bismillah-ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3);
+      margin-top: var(--space-2);
+    }
+    .bism-line {
+      width: 48px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--color-gold-500));
+    }
+    .bism-line.rev {
+      background: linear-gradient(to left, transparent, var(--color-gold-500));
+    }
+    .bism-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--color-gold-500);
+      box-shadow: 0 0 6px rgba(196,146,42,0.5);
+    }
+
+    /* ── HEADING BLOCK ── */
+    .checkin-eyebrow {
+      font-family: var(--font-heading);
+      font-size: 0.52rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--color-gold-500);
+      text-align: center;
+      direction: ltr;
+      margin-bottom: var(--space-2);
+    }
+    .checkin-heading {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      color: var(--text-primary);
+      text-align: center;
+      direction: ltr;
+      line-height: 1.3;
+      margin-bottom: var(--space-2);
+    }
+    .checkin-subtitle {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: var(--text-md);
+      color: var(--text-secondary);
+      text-align: center;
+      direction: ltr;
+      line-height: var(--leading-relaxed);
+    }
+
+    /* ── STATS CARD ── */
+    .stats-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--color-gold-600);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      direction: ltr;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .stats-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(to right, transparent, var(--color-gold-400), transparent);
+    }
+    .stats-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(to right, transparent, var(--color-gold-600), transparent);
+    }
+    .stat-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-2) var(--space-3);
+    }
+    .stat-divider {
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(196,146,42,0.4), transparent);
+      flex-shrink: 0;
+      align-self: stretch;
+    }
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      color: var(--color-gold-200);
+      line-height: 1;
+      text-shadow: 0 0 12px rgba(196,146,42,0.3);
+    }
+    .stat-label {
+      font-family: var(--font-heading);
+      font-size: 0.45rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-gold-500);
+    }
+
+    /* ── GRADUATION CARD ── */
+    .grad-card {
+      background: var(--bg-card);
+      border: 1px solid var(--color-gold-600);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      position: relative;
+      overflow: hidden;
+      direction: rtl;
+    }
+    .grad-card::before {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border: 1px solid rgba(196,146,42,0.2);
+      border-radius: calc(var(--radius-md) - 2px);
+      pointer-events: none;
+    }
+    .grad-habit-name-ar {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .grad-habit-name-en {
+      font-family: var(--font-heading);
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: block;
+      direction: ltr;
+      margin-top: 2px;
+    }
+
+    /* consistency dots */
+    .consistency-dots {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+      justify-content: center;
+      direction: ltr;
+      padding: var(--space-4) 0 var(--space-3);
+    }
+    .c-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(196,146,42,0.25);
+      background: rgba(196,146,42,0.04);
+      flex-shrink: 0;
+      transition: all var(--transition-base);
+    }
+    .c-dot.hit {
+      background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-500));
+      border-color: var(--color-gold-400);
+      box-shadow: 0 0 8px rgba(196,146,42,0.4);
+    }
+    .c-dot.miss {
+      background: rgba(196,146,42,0.04);
+      border-color: rgba(196,146,42,0.15);
+    }
+
+    /* graduate notice */
+    .graduate-notice {
+      font-family: var(--font-heading);
+      font-size: 0.52rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--color-gold-400);
+      text-align: center;
+      direction: ltr;
+      margin-bottom: var(--space-3);
+    }
+    @keyframes gold-pulse-soft {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(196,146,42,0.5); }
+      50% { box-shadow: 0 0 0 8px rgba(196,146,42,0); }
+    }
+
+    /* action chips */
+    .action-chips {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2);
+      direction: ltr;
+    }
+    .action-chip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px var(--space-3);
+      border-radius: var(--radius-md);
+      border: 1.5px solid rgba(196,146,42,0.25);
+      background: rgba(196,146,42,0.04);
+      font-family: var(--font-heading);
+      font-size: 0.52rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-gold-500);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      user-select: none;
+      text-align: center;
+    }
+    .action-chip:hover {
+      border-color: rgba(196,146,42,0.5);
+      background: rgba(196,146,42,0.08);
+    }
+    .action-chip.selected {
+      border-color: var(--color-gold-500);
+      background: rgba(196,146,42,0.12);
+      color: var(--color-gold-200);
+      box-shadow: 0 0 0 3px rgba(196,146,42,0.1);
+    }
+    .action-chip.chip-levelup {
+      border-color: rgba(196,146,42,0.45);
+      color: var(--color-gold-400);
+    }
+    .action-chip.chip-levelup.pulse {
+      animation: gold-pulse-soft 2s ease-in-out infinite;
+      border-color: var(--color-gold-500);
+      background: rgba(196,146,42,0.08);
+    }
+    .action-chip.chip-down {
+      border-color: rgba(160,80,80,0.3);
+      color: rgba(200,100,100,0.7);
+    }
+    .action-chip.chip-swap {
+      opacity: 0.55;
+    }
+    .action-chip i { font-size: 10px; }
+
+    /* ── REFLECTION ── */
+    .reflection-label {
+      font-family: var(--font-heading);
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-gold-500);
+      direction: ltr;
+      margin-bottom: var(--space-3);
+    }
+    .ds-textarea {
+      width: 100%;
+      box-sizing: border-box;
+      background: rgba(196,146,42,0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: var(--text-md);
+      color: var(--text-primary);
+      outline: none;
+      resize: none;
+      direction: ltr;
+      line-height: var(--leading-relaxed);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .ds-textarea::placeholder { color: var(--text-muted); font-style: italic; }
+    .ds-textarea:focus {
+      border-color: var(--color-gold-500);
+      box-shadow: 0 0 0 3px rgba(196,146,42,0.1);
+    }
+
+    /* ── CONTINUE BUTTON ── */
+    .continue-wrap {
+      padding: var(--space-2) var(--space-5) var(--space-6);
+      flex-shrink: 0;
+    }
+    .btn-continue {
+      display: block;
+      width: 100%;
+      padding: 15px var(--space-6);
+      font-family: var(--font-heading);
+      font-size: var(--text-xs);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      text-align: center;
+      text-decoration: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-600));
+      color: var(--color-gold-100);
+      box-shadow: 0 2px 20px rgba(196,146,42,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-continue::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.08);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+    .btn-continue:hover::before { opacity: 1; }
+    .btn-continue:active { transform: scale(0.98); }
+
+    /* ── HELPERS ── */
+    .space-top { margin-top: var(--space-5); }
+    .space-top-sm { margin-top: var(--space-3); }
+  </style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="screen">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>▌▌▌</span>
+        <span style="font-size:9px;">WiFi</span>
+        <span style="font-size:9px;">⬛</span>
+      </div>
+    </div>
+
+    <div class="checkin-screen">
+      <div class="checkin-scroll">
+
+        <!-- 1 · BISMILLAH -->
+        <div class="bismillah-block" style="animation: fadeUp 0.6s var(--transition-enter) both;">
+          <div class="bismillah-text">بِسْمِ ٱللَّٰهِ</div>
+          <div class="bismillah-ornament">
+            <div class="bism-line rev"></div>
+            <div class="bism-dot"></div>
+            <span style="font-family:var(--font-heading);font-size:0.55rem;letter-spacing:0.3em;color:var(--color-gold-500);">✦</span>
+            <div class="bism-dot"></div>
+            <div class="bism-line"></div>
+          </div>
+        </div>
+
+        <!-- 2 · HEADING -->
+        <div style="animation: fadeUp 0.6s 0.1s var(--transition-enter) both;">
+          <div class="checkin-eyebrow">Week 1 Review</div>
+          <div class="checkin-heading">How did this week feel?</div>
+          <div class="checkin-subtitle">Pause. Reflect. Then choose what comes next.</div>
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="space-top" style="animation: fadeUp 0.6s 0.15s var(--transition-enter) both;">
+          <div class="orn-divider">
+            <div class="orn-divider-line"></div>
+            <span class="orn-divider-diamond"></span>
+            <span class="orn-divider-star">✦</span>
+            <span class="orn-divider-diamond"></span>
+            <div class="orn-divider-line"></div>
+          </div>
+        </div>
+
+        <!-- 3 · STATS CARD -->
+        <div class="space-top" style="animation: fadeUp 0.6s 0.2s var(--transition-enter) both;">
+          <div class="stats-card">
+            <div class="stat-item">
+              <div class="stat-number">18</div>
+              <div style="font-family:var(--font-heading);font-size:0.38rem;letter-spacing:0.15em;color:var(--color-gold-600);">OF 21</div>
+              <div class="stat-label">Acts Done</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <div class="stat-number">85%</div>
+              <div style="font-family:var(--font-heading);font-size:0.38rem;letter-spacing:0.15em;color:var(--color-gold-600);">&nbsp;</div>
+              <div class="stat-label">Consistency</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <div class="stat-number">3</div>
+              <div style="font-family:var(--font-heading);font-size:0.38rem;letter-spacing:0.15em;color:var(--color-gold-600);">&nbsp;</div>
+              <div class="stat-label">Habits</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 · SECTION HEADING -->
+        <div class="space-top" style="animation: fadeUp 0.6s 0.25s var(--transition-enter) both;">
+          <div class="section-label">
+            <div class="section-label-text">Your Habits This Week</div>
+            <div class="section-label-line"></div>
+          </div>
+        </div>
+
+        <!-- HABIT 1 — 6/7 (ready to graduate) -->
+        <div class="space-top-sm" style="animation: fadeUp 0.6s 0.3s var(--transition-enter) both;">
+          <div class="grad-card">
+            <div class="grad-habit-name-ar">قراءة القرآن</div>
+            <span class="grad-habit-name-en">Quran Reading · Tier 1</span>
+            <div class="consistency-dots" id="dots-1">
+              <!-- populated by JS -->
+            </div>
+            <div class="graduate-notice">✦ You're ready to graduate ✦</div>
+            <div class="action-chips" id="chips-1">
+              <div class="action-chip selected" data-group="1" data-val="maintain" onclick="selectChip(this)">
+                <i class="fa-solid fa-check"></i> Maintain
+              </div>
+              <div class="action-chip chip-levelup pulse" data-group="1" data-val="levelup" onclick="selectChip(this)">
+                <i class="fa-solid fa-arrow-up"></i> Level Up
+              </div>
+              <div class="action-chip chip-down" data-group="1" data-val="down" onclick="selectChip(this)">
+                <i class="fa-solid fa-arrow-down"></i> Scale Down
+              </div>
+              <div class="action-chip chip-swap" data-group="1" data-val="swap" onclick="selectChip(this)">
+                <i class="fa-solid fa-rotate"></i> Swap
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HABIT 2 — 7/7 (perfect, ready to graduate) -->
+        <div class="space-top-sm" style="animation: fadeUp 0.6s 0.38s var(--transition-enter) both;">
+          <div class="grad-card">
+            <div class="grad-habit-name-ar">أذكار الصباح والمساء</div>
+            <span class="grad-habit-name-en">Morning & Evening Adhkar · Tier 1</span>
+            <div class="consistency-dots" id="dots-2"></div>
+            <div class="graduate-notice">✦ You're ready to graduate ✦</div>
+            <div class="action-chips" id="chips-2">
+              <div class="action-chip" data-group="2" data-val="maintain" onclick="selectChip(this)">
+                <i class="fa-solid fa-check"></i> Maintain
+              </div>
+              <div class="action-chip chip-levelup pulse selected" data-group="2" data-val="levelup" onclick="selectChip(this)">
+                <i class="fa-solid fa-arrow-up"></i> Level Up
+              </div>
+              <div class="action-chip chip-down" data-group="2" data-val="down" onclick="selectChip(this)">
+                <i class="fa-solid fa-arrow-down"></i> Scale Down
+              </div>
+              <div class="action-chip chip-swap" data-group="2" data-val="swap" onclick="selectChip(this)">
+                <i class="fa-solid fa-rotate"></i> Swap
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HABIT 3 — 4/7 (needs more work) -->
+        <div class="space-top-sm" style="animation: fadeUp 0.6s 0.46s var(--transition-enter) both;">
+          <div class="grad-card">
+            <div class="grad-habit-name-ar">قيام الليل</div>
+            <span class="grad-habit-name-en">Tahajjud · Tier 1</span>
+            <div class="consistency-dots" id="dots-3"></div>
+            <!-- no graduate notice -->
+            <div class="action-chips" id="chips-3">
+              <div class="action-chip selected" data-group="3" data-val="maintain" onclick="selectChip(this)">
+                <i class="fa-solid fa-check"></i> Maintain
+              </div>
+              <div class="action-chip chip-levelup" data-group="3" data-val="levelup" onclick="selectChip(this)">
+                <i class="fa-solid fa-arrow-up"></i> Level Up
+              </div>
+              <div class="action-chip chip-down" data-group="3" data-val="down" onclick="selectChip(this)">
+                <i class="fa-solid fa-arrow-down"></i> Scale Down
+              </div>
+              <div class="action-chip chip-swap" data-group="3" data-val="swap" onclick="selectChip(this)">
+                <i class="fa-solid fa-rotate"></i> Swap
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 · DOUBLE DIVIDER -->
+        <div class="space-top" style="animation: fadeUp 0.6s 0.52s var(--transition-enter) both;">
+          <div class="orn-double-line"><span></span><span></span></div>
+        </div>
+
+        <!-- 6 · REFLECTION -->
+        <div class="space-top" style="animation: fadeUp 0.6s 0.56s var(--transition-enter) both;">
+          <div class="reflection-label">One thing I learned this week</div>
+          <textarea
+            class="ds-textarea"
+            rows="4"
+            placeholder="Write whatever comes to mind…"
+          ></textarea>
+        </div>
+
+      </div><!-- end scroll -->
+
+      <!-- 7 · CONTINUE -->
+      <div class="continue-wrap" style="animation: fadeUp 0.6s 0.6s var(--transition-enter) both;">
+        <a href="../home/index.html" class="btn-continue">
+          Continue into Next Week ✦
+        </a>
+      </div>
+
+    </div><!-- end checkin-screen -->
+  </div>
+</div>
+
+<script>
+/* ── BUILD CONSISTENCY DOTS ── */
+var habitDays = {
+  1: [true,  true,  false, true,  true,  true,  false], /* 5/7 → show 6/7 */
+  2: [true,  true,  true,  true,  true,  true,  true ], /* 7/7 */
+  3: [true,  false, true,  false, true,  false, true ], /* 4/7 */
+};
+/* override habit 1 to exactly 6/7 for the "ready to graduate" narrative */
+habitDays[1] = [true, true, false, true, true, true, true];
+
+Object.keys(habitDays).forEach(function(key) {
+  var days = habitDays[key];
+  var container = document.getElementById('dots-' + key);
+  if (!container) return;
+  days.forEach(function(hit) {
+    var dot = document.createElement('div');
+    dot.className = 'c-dot ' + (hit ? 'hit' : 'miss');
+    container.appendChild(dot);
+  });
+});
+
+/* ── CHIP SELECTION ── */
+function selectChip(el) {
+  var group = el.dataset.group;
+  var chips = document.querySelectorAll('[data-group="' + group + '"]');
+  chips.forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+</script>
+<script src="../../js/router.js"></script>
+</body>
+</html>

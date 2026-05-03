@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — الموقع</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { padding: 0; }
+
+    .select-wrap {
+      position: relative;
+    }
+    .ds-select {
+      width: 100%;
+      padding: 11px var(--space-10) 11px var(--space-4);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      transition: all var(--transition-fast);
+      outline: none;
+      appearance: none;
+      cursor: pointer;
+      direction: rtl;
+    }
+    .ds-select:hover { border-color: var(--color-gold-400); }
+    .ds-select:focus { border-color: var(--color-gold-500); box-shadow: 0 0 0 3px rgba(196,146,42,0.15); }
+    .select-arrow {
+      position: absolute;
+      left: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-gold-500);
+      pointer-events: none;
+      font-size: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="screen">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>▌▌▌</span>
+        <span style="font-size:9px;">WiFi</span>
+        <span style="font-size:9px;">⬛</span>
+      </div>
+    </div>
+
+    <!-- App Header -->
+    <div class="app-header" style="justify-content: flex-start; gap: var(--space-4);">
+      <a href="02-language.html" class="app-header-icon" style="text-decoration:none; font-size:var(--text-lg);">‹</a>
+      <div>
+        <div class="app-header-title" style="font-size: var(--text-xl);">ورق</div>
+        <span class="app-header-title-latin">Location</span>
+      </div>
+    </div>
+
+    <div class="scroll-area">
+      <div style="padding: var(--space-6) var(--space-5); min-height: 600px; display: flex; flex-direction: column;">
+
+        <!-- Progress dots -->
+        <div style="display: flex; gap: 8px; align-items: center; justify-content: center; margin-bottom: var(--space-8);">
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.35);"></div>
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.35);"></div>
+          <div style="width:28px;height:4px;border-radius:2px;background:var(--color-gold-400);box-shadow:0 0 8px rgba(196,146,42,0.5);"></div>
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.25);"></div>
+          <div style="width:8px;height:4px;border-radius:2px;background:rgba(196,146,42,0.25);"></div>
+        </div>
+
+        <!-- Heading -->
+        <div class="fade-up" style="text-align: center; margin-bottom: var(--space-6);">
+          <h1 style="
+            font-family: var(--font-arabic);
+            font-size: var(--text-2xl);
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+          ">أين أنت؟</h1>
+          <p style="
+            font-family: var(--font-body);
+            font-style: italic;
+            font-size: var(--text-md);
+            color: var(--text-secondary);
+          ">سنحسب أوقات الصلاة لمدينتك</p>
+          <p style="
+            font-family: var(--font-heading);
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            direction: ltr;
+            margin-top: 4px;
+          ">We'll calculate prayer times for you</p>
+        </div>
+
+        <!-- Divider -->
+        <div class="fade-up-1" style="margin-bottom: var(--space-6);">
+          <div class="orn-divider">
+            <div class="orn-divider-line"></div>
+            <span class="orn-divider-star">✦</span>
+            <div class="orn-divider-line"></div>
+          </div>
+        </div>
+
+        <!-- Form fields -->
+        <div class="fade-up-2" style="display: flex; flex-direction: column; gap: var(--space-5); flex: 1;">
+
+          <!-- City input -->
+          <div class="input-wrap">
+            <label class="input-label" style="direction:ltr;">City / المدينة</label>
+            <input
+              type="text"
+              class="ds-input arabic"
+              placeholder="مثال: مكة المكرمة، القاهرة، لندن"
+              style="direction: rtl;"
+            >
+          </div>
+
+          <!-- Calculation method -->
+          <div class="input-wrap">
+            <label class="input-label" style="direction:ltr;">Calculation Method / طريقة الحساب</label>
+            <div class="select-wrap">
+              <select class="ds-select">
+                <option>أم القرى — Umm al-Qura</option>
+                <option>ISNA — الجمعية الإسلامية لأمريكا الشمالية</option>
+                <option>رابطة العالم الإسلامي — Muslim World League</option>
+                <option>الهيئة المصرية العامة للمساحة</option>
+              </select>
+              <span class="select-arrow">▾</span>
+            </div>
+          </div>
+
+          <!-- Madhhab -->
+          <div class="input-wrap">
+            <label class="input-label" style="direction:ltr;">School of Thought / المذهب</label>
+            <div class="select-wrap">
+              <select class="ds-select">
+                <option>الحنفي — Hanafi</option>
+                <option>الشافعي — Shafi'i</option>
+                <option>المالكي — Maliki</option>
+                <option>الحنبلي — Hanbali</option>
+              </select>
+              <span class="select-arrow">▾</span>
+            </div>
+          </div>
+
+          <!-- Location helper -->
+          <div class="ds-alert ds-alert-warning" style="direction:ltr;">
+            <div class="ds-alert-icon"><i class="fa-solid fa-mosque"></i></div>
+            <div>
+              <div class="ds-alert-title">Prayer times are calculated locally</div>
+              <div class="ds-alert-text">No internet required after setup.</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Continue button -->
+        <div class="fade-up-3" style="margin-top: var(--space-8);">
+          <a href="04-assessment.html" class="btn btn-primary" style="
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            direction: ltr;
+          ">Continue</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="../../js/router.js"></script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ورق — Insights</title>
+  <link rel="stylesheet" href="../../css/design-system.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { padding: 0; }
+    .fa-solid { line-height: 1; }
+
+    /* ── HEADER ── */
+    .ins-header {
+      background: linear-gradient(135deg, var(--color-gold-900) 0%, var(--color-gold-800) 100%);
+      border-bottom: 1px solid var(--color-gold-600);
+      padding: var(--space-3) var(--space-4);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0; direction: ltr;
+    }
+    .ins-header-btn {
+      width: 36px; height: 36px; border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: rgba(196,146,42,0.08);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-gold-300); font-size: 15px;
+      cursor: pointer; text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .ins-header-btn:hover { background: rgba(196,146,42,0.18); }
+    .ins-header-title {
+      font-family: var(--font-heading);
+      font-size: var(--text-xs); letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--color-gold-300);
+    }
+    .ins-header-spacer { width: 36px; }
+
+    /* ── TIME RANGE ── */
+    .time-range {
+      display: flex; gap: var(--space-2); justify-content: center;
+      padding: var(--space-4) var(--space-5) var(--space-2);
+      direction: ltr; flex-shrink: 0;
+    }
+    .range-chip {
+      padding: 6px 18px; border-radius: var(--radius-full);
+      border: 1px solid rgba(196,146,42,0.3); background: transparent;
+      font-family: var(--font-heading); font-size: 0.52rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--color-gold-500); cursor: pointer;
+      transition: all var(--transition-fast); user-select: none;
+    }
+    .range-chip:hover { background: rgba(196,146,42,0.08); }
+    .range-chip.active {
+      background: rgba(196,146,42,0.14); border-color: var(--color-gold-500);
+      color: var(--color-gold-200); box-shadow: 0 0 0 2px rgba(196,146,42,0.1);
+    }
+
+    /* ── SCROLL ── */
+    .ins-scroll {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      padding: var(--space-3) var(--space-4) var(--space-2);
+      display: flex; flex-direction: column; gap: var(--space-4);
+    }
+    .ins-scroll::-webkit-scrollbar { display: none; }
+
+    /* ── CARD BASE ── */
+    .ins-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+    }
+    .ins-card-gold {
+      background: var(--bg-card);
+      border: 1.5px solid var(--color-gold-600);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      position: relative; overflow: hidden;
+    }
+    .ins-card-gold::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(to right, transparent, var(--color-gold-400), transparent);
+    }
+
+    /* ── CARD TITLE ── */
+    .card-title {
+      font-family: var(--font-heading); font-size: 0.58rem;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--color-gold-500); direction: ltr; margin-bottom: var(--space-4);
+    }
+
+    /* ── CONSISTENCY ── */
+    .big-number {
+      font-family: var(--font-display); font-size: 4rem; line-height: 1;
+      color: var(--color-gold-200);
+      text-shadow: 0 0 30px rgba(196,146,42,0.3);
+      text-align: center; direction: ltr;
+    }
+    .consistency-sub {
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-sm); color: var(--text-secondary);
+      margin-top: var(--space-2); text-align: center; direction: ltr;
+    }
+    .tiny-divider {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin: var(--space-3) 0;
+    }
+    .tiny-line { width: 48px; height: 1px; background: rgba(196,146,42,0.2); }
+    .tiny-diamond {
+      width: 5px; height: 5px; flex-shrink: 0;
+      background: var(--color-gold-500); transform: rotate(45deg);
+    }
+    .trend-row {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      font-family: var(--font-heading); font-size: 0.52rem;
+      letter-spacing: 0.15em; text-transform: uppercase; color: #7abf8e;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .prog-track {
+      flex: 1; height: 7px; border-radius: var(--radius-full);
+      background: rgba(196,146,42,0.1); overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%; border-radius: var(--radius-full);
+      background: linear-gradient(to right, var(--color-gold-700), var(--color-gold-500));
+      box-shadow: 0 0 6px rgba(196,146,42,0.4);
+    }
+
+    /* ── PRAYER ROWS ── */
+    .prayer-row {
+      display: flex; align-items: center; gap: var(--space-3);
+      direction: ltr; margin-bottom: var(--space-3);
+    }
+    .prayer-row:last-child { margin-bottom: 0; }
+    .prayer-name {
+      font-family: var(--font-heading); font-size: 0.52rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-secondary); width: 52px; flex-shrink: 0;
+    }
+    .prayer-count {
+      font-family: var(--font-heading); font-size: 0.44rem;
+      letter-spacing: 0.08em; color: var(--text-muted);
+      width: 46px; flex-shrink: 0; text-align: right;
+    }
+
+    /* ── HABIT ROWS ── */
+    .habit-row {
+      display: flex; align-items: center; gap: var(--space-3);
+      direction: ltr; margin-bottom: var(--space-4);
+    }
+    .habit-row:last-child { margin-bottom: 0; }
+    .habit-name-wrap { width: 88px; flex-shrink: 0; }
+    .habit-name-ar {
+      font-family: var(--font-display); font-size: 0.85rem;
+      color: var(--text-primary); direction: rtl; line-height: 1.2;
+    }
+    .habit-name-en {
+      font-family: var(--font-heading); font-size: 0.4rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted);
+    }
+    .habit-pct {
+      font-family: var(--font-heading); font-size: 0.52rem;
+      letter-spacing: 0.08em; color: var(--color-gold-400);
+      width: 30px; flex-shrink: 0; text-align: right;
+    }
+
+    /* ── PATTERNS ── */
+    .patterns-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-5); position: relative;
+    }
+    .patterns-card::after {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 3px; height: 100%;
+      background: linear-gradient(to bottom, var(--color-gold-500), transparent);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    }
+    .pattern-item {
+      display: flex; gap: var(--space-3); align-items: flex-start;
+      direction: ltr; margin-bottom: var(--space-3);
+    }
+    .pattern-item:last-child { margin-bottom: 0; }
+    .pattern-bullet { color: var(--color-gold-500); flex-shrink: 0; margin-top: 4px; font-size: 9px; }
+    .pattern-text {
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-md); color: var(--text-secondary);
+      line-height: var(--leading-relaxed);
+    }
+    .patterns-footer {
+      margin-top: var(--space-4); padding-top: var(--space-3);
+      border-top: 1px solid rgba(196,146,42,0.1);
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-sm); color: var(--text-muted);
+      text-align: center; direction: ltr;
+    }
+
+    /* ── HEATMAP ── */
+    .heatmap-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: 4px; direction: ltr;
+    }
+    .hmap-day-lbl {
+      font-family: var(--font-heading); font-size: 0.38rem;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--text-muted); text-align: center; padding-bottom: 3px;
+    }
+    .hmap-cell {
+      aspect-ratio: 1; border-radius: 3px;
+      background: rgba(196,146,42,0.06);
+    }
+    .hmap-cell.l1 { background: rgba(196,146,42,0.14); }
+    .hmap-cell.l2 { background: rgba(196,146,42,0.30); }
+    .hmap-cell.l3 {
+      background: rgba(196,146,42,0.52);
+      box-shadow: 0 0 4px rgba(196,146,42,0.3);
+    }
+    .hmap-cell.l4 {
+      background: rgba(196,146,42,0.78);
+      box-shadow: 0 0 8px rgba(196,146,42,0.45);
+    }
+    .hmap-cell.today {
+      outline: 1.5px solid var(--color-gold-400); outline-offset: 1px;
+    }
+    .hmap-caption {
+      margin-top: var(--space-3);
+      font-family: var(--font-body); font-style: italic;
+      font-size: var(--text-sm); color: var(--text-muted);
+      text-align: center; direction: ltr;
+    }
+    .hmap-legend {
+      display: flex; align-items: center; gap: 4px;
+      justify-content: center; margin-top: var(--space-2); direction: ltr;
+    }
+    .hmap-legend-cell {
+      width: 10px; height: 10px; border-radius: 2px;
+    }
+    .hmap-legend-label {
+      font-family: var(--font-heading); font-size: 0.4rem;
+      letter-spacing: 0.1em; color: var(--text-muted);
+      margin: 0 4px;
+    }
+  </style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="screen" style="display:flex; flex-direction:column;">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-bar-time">9:41</span>
+      <div class="status-bar-icons">
+        <span>▌▌▌</span>
+        <span style="font-size:9px;">WiFi</span>
+        <span style="font-size:9px;">⬛</span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="ins-header">
+      <a href="../home/index.html" class="ins-header-btn">
+        <i class="fa-solid fa-arrow-right-to-bracket fa-flip-horizontal"></i>
+      </a>
+      <span class="ins-header-title">Insights</span>
+      <div class="ins-header-spacer"></div>
+    </div>
+
+    <!-- Time Range -->
+    <div class="time-range">
+      <div class="range-chip" onclick="setRange(this)">Week</div>
+      <div class="range-chip active" onclick="setRange(this)">Month</div>
+      <div class="range-chip" onclick="setRange(this)">Year</div>
+    </div>
+
+    <!-- Scroll -->
+    <div class="ins-scroll">
+
+      <!-- 1 · Overall Consistency -->
+      <div class="ins-card-gold">
+        <div class="card-title">Overall Consistency</div>
+        <div class="big-number">78%</div>
+        <div class="consistency-sub">of your commitments this month</div>
+        <div class="tiny-divider">
+          <div class="tiny-line"></div>
+          <div class="tiny-diamond"></div>
+          <div class="tiny-line"></div>
+        </div>
+        <div class="trend-row">
+          <i class="fa-solid fa-arrow-trend-up" style="font-size:12px;"></i>
+          12% from last month
+        </div>
+      </div>
+
+      <!-- 2 · Prayer Tracker -->
+      <div class="ins-card fade-up-1">
+        <div class="card-title">Five Daily Prayers</div>
+        <div id="prayer-rows"></div>
+      </div>
+
+      <!-- 3 · Habit Bars -->
+      <div class="ins-card fade-up-2">
+        <div class="card-title">Your Habits</div>
+        <div id="habit-rows"></div>
+      </div>
+
+      <!-- 4 · Patterns -->
+      <div class="patterns-card fade-up-2">
+        <div class="card-title">Gentle Observations</div>
+        <div class="pattern-item">
+          <span class="pattern-bullet"><i class="fa-solid fa-diamond"></i></span>
+          <span class="pattern-text">You tend to miss Asr on workdays.</span>
+        </div>
+        <div class="pattern-item">
+          <span class="pattern-bullet"><i class="fa-solid fa-diamond"></i></span>
+          <span class="pattern-text">Your strongest day is Friday.</span>
+        </div>
+        <div class="pattern-item">
+          <span class="pattern-bullet"><i class="fa-solid fa-diamond"></i></span>
+          <span class="pattern-text">Mornings are your most consistent time.</span>
+        </div>
+        <div class="patterns-footer">These are observations, not judgments.</div>
+      </div>
+
+      <!-- 5 · Heatmap -->
+      <div class="ins-card fade-up-3">
+        <div class="card-title">This Month at a Glance</div>
+        <div class="heatmap-grid" id="heatmap-grid">
+          <div class="hmap-day-lbl">Sat</div>
+          <div class="hmap-day-lbl">Sun</div>
+          <div class="hmap-day-lbl">Mon</div>
+          <div class="hmap-day-lbl">Tue</div>
+          <div class="hmap-day-lbl">Wed</div>
+          <div class="hmap-day-lbl">Thu</div>
+          <div class="hmap-day-lbl">Fri</div>
+        </div>
+        <div class="hmap-legend">
+          <span class="hmap-legend-label">Less</span>
+          <div class="hmap-legend-cell" style="background:rgba(196,146,42,0.06);"></div>
+          <div class="hmap-legend-cell" style="background:rgba(196,146,42,0.14);"></div>
+          <div class="hmap-legend-cell" style="background:rgba(196,146,42,0.30);"></div>
+          <div class="hmap-legend-cell" style="background:rgba(196,146,42,0.52);"></div>
+          <div class="hmap-legend-cell" style="background:rgba(196,146,42,0.78);"></div>
+          <span class="hmap-legend-label">More</span>
+        </div>
+        <div class="hmap-caption">Each square is one day. Brighter means more habits completed.</div>
+      </div>
+
+      <div style="height:var(--space-2);"></div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+      <a href="../home/index.html" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-house"></i></span>
+        <span class="nav-label">Home</span>
+      </a>
+      <a href="../library/index.html" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-book-open"></i></span>
+        <span class="nav-label">Library</span>
+      </a>
+      <a href="#" class="nav-item active">
+        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+        <span class="nav-label">Insights</span>
+      </a>
+      <a href="../settings/index.html" class="nav-item">
+        <span class="nav-icon"><i class="fa-solid fa-sliders"></i></span>
+        <span class="nav-label">Settings</span>
+      </a>
+    </nav>
+
+  </div>
+</div>
+
+<script>
+/* ── TIME RANGE ── */
+function setRange(el) {
+  document.querySelectorAll('.range-chip').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+/* ── PRAYER DATA ── */
+var prayers = [
+  { name: 'Fajr',    pct: 65, label: '20/30 days' },
+  { name: 'Dhuhr',   pct: 90, label: '27/30 days' },
+  { name: 'Asr',     pct: 85, label: '26/30 days' },
+  { name: 'Maghrib', pct: 95, label: '29/30 days' },
+  { name: 'Isha',    pct: 80, label: '24/30 days' },
+];
+(function() {
+  var container = document.getElementById('prayer-rows');
+  prayers.forEach(function(p) {
+    var row = document.createElement('div');
+    row.className = 'prayer-row';
+    row.innerHTML =
+      '<span class="prayer-name">' + p.name + '</span>' +
+      '<div class="prog-track"><div class="prog-fill" style="width:' + p.pct + '%"></div></div>' +
+      '<span class="prayer-count">' + p.label + '</span>';
+    container.appendChild(row);
+  });
+})();
+
+/* ── HABIT DATA ── */
+var habits = [
+  { ar: 'قراءة القرآن', en: 'Quran Reading',   pct: 85 },
+  { ar: 'أذكار الصباح', en: 'Morning Adhkar',   pct: 70 },
+  { ar: 'قيام الليل',   en: 'Tahajjud',          pct: 60 },
+];
+(function() {
+  var container = document.getElementById('habit-rows');
+  habits.forEach(function(h) {
+    var row = document.createElement('div');
+    row.className = 'habit-row';
+    row.innerHTML =
+      '<div class="habit-name-wrap">' +
+        '<div class="habit-name-ar">' + h.ar + '</div>' +
+        '<div class="habit-name-en">' + h.en + '</div>' +
+      '</div>' +
+      '<div class="prog-track"><div class="prog-fill" style="width:' + h.pct + '%"></div></div>' +
+      '<span class="habit-pct">' + h.pct + '%</span>';
+    container.appendChild(row);
+  });
+})();
+
+/* ── HEATMAP ── */
+(function() {
+  /* 0=none, 1=light, 2=mid, 3=strong, 4=full */
+  var levels = [
+    2,1,3,0,1,4,3,
+    1,2,0,2,3,4,4,
+    2,1,1,3,2,4,3,
+    0,2,3,2,1,3,4,
+    2,3
+  ];
+  var todayIdx = 19;
+  var grid = document.getElementById('heatmap-grid');
+  var classMap = ['','l1','l2','l3','l4'];
+  levels.forEach(function(lvl, i) {
+    var cell = document.createElement('div');
+    cell.className = 'hmap-cell ' + (classMap[lvl] || '') + (i === todayIdx ? ' today' : '');
+    grid.appendChild(cell);
+  });
+  /* fill remainder of last row */
+  var rem = (7 - (levels.length % 7)) % 7;
+  for (var k = 0; k < rem; k++) {
+    var empty = document.createElement('div');
+    grid.appendChild(empty);
+  }
+})();
+</script>
+<script src="../../js/router.js"></script>
+</body>
+</html>
